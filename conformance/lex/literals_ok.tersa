@@ -1,0 +1,16 @@
+# spec: design 6.7 integer, float, and text literals
+# expect: check-ok
+module literals_ok
+
+function main() returns Unit
+do
+  let n = 1_000
+  let h = 0x10
+  let b = 0b1010
+  let f = 1.5e-1
+  let t: Text = "line\n\u{1F40D}"
+  let _ = n + h + b
+  let _ = f
+  let _ = t
+  return
+end

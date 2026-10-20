@@ -1,0 +1,21 @@
+# spec: design 7.5 records
+# expect: tests-pass
+module shapes
+
+public record Rect
+  width: Int
+  height: Int
+  invariant width >= 0 and height >= 0
+end
+
+public function area(r: Rect) returns Int
+  ensures result >= 0
+do
+  return r.width * r.height
+end
+
+test "area of a 3 by 4 rectangle"
+do
+  let r = Rect(width = 3, height = 4)
+  expect area(r) == 12
+end

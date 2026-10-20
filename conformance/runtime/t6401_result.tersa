@@ -1,0 +1,24 @@
+# spec: language reference appendix C
+# expect: stdout
+# mode: host
+# allow: Python
+# allow: Console
+# |ValueError
+module t6401_result
+
+import std.console exposing print
+
+foreign "python:math.factorial" function factorial(n: Int) returns Result[Int, PythonError]
+  uses Python
+
+function main() returns Unit
+  uses Console, Python
+do
+  match factorial(-1)
+    case Ok(_) then
+      print("ok")
+    case Error(err) then
+      print(err.type_name)
+  end
+  return
+end

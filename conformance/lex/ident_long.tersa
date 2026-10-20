@@ -1,0 +1,10 @@
+# spec: design 6.5 E0012
+# expect: check-error E0012
+# fixed: let aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = 1 => let a = 1
+module ident_long
+
+function main() returns Unit
+do
+  let aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = 1
+  return
+end

@@ -1,0 +1,11 @@
+# spec: language reference unknown method
+# expect: check-error E3004
+# fixed: xs.missing => xs.length()
+module e3004
+
+function main() returns Unit
+do
+  let xs = [1]
+  let _ = xs.missing
+  return
+end

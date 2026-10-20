@@ -1,0 +1,10 @@
+# spec: design 8 unknown name
+# expect: check-error E2000
+# fixed: let _ = missing => let _ = 1
+module e2000
+
+function main() returns Unit
+do
+  let _ = missing
+  return
+end

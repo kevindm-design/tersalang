@@ -1,0 +1,9 @@
+# spec: language reference resolved item 4
+# expect: check-error E3025
+# fixed: true < false => true != false
+module e3025
+
+function main() returns Bool
+do
+  return true < false
+end

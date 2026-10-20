@@ -1,0 +1,9 @@
+﻿# spec: design 6.1 E0001
+# expect: check-error E0001
+# no-fix: delete the byte-order mark before the first `#`.
+module bom
+
+function main() returns Unit
+do
+  return
+end

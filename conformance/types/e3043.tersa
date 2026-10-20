@@ -1,0 +1,24 @@
+# spec: language reference appendix C
+# expect: check-error E3043
+# fixed: implements Comparable[Rect]\n  function compare(a: Rect, b: Rect) returns Ordering\n =>
+# fixed:   do\n    return Equal\n  end\nend\n\n =>
+module e3043
+
+record Rect
+  w: Int
+  h: Int
+end
+
+implements Comparable[Rect]
+  function compare(a: Rect, b: Rect) returns Ordering
+  do
+    return Equal
+  end
+end
+
+implements Comparable[Rect]
+  function compare(a: Rect, b: Rect) returns Ordering
+  do
+    return Equal
+  end
+end

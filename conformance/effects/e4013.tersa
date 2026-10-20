@@ -1,0 +1,11 @@
+# spec: design 13 unknown standard module
+# expect: check-error E4013
+# fixed: import std.missing => import std.math
+module e4013
+
+import std.missing
+
+function main() returns Unit
+do
+  return
+end

@@ -1,0 +1,11 @@
+# spec: design 9.6 at without a bounds check
+# expect: check-warn W3050
+# fixed: xs.at(0) => xs.get(0)
+module w3050_bare
+
+function main() returns Unit
+do
+  let xs = [1, 2, 3]
+  let _ = xs.at(0)
+  return
+end

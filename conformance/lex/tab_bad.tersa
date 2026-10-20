@@ -1,0 +1,10 @@
+# spec: design 6.1 E0003
+# expect: check-error E0003
+# no-fix: replace the tab with a space.
+module tab_bad
+
+function main() returns Unit
+do
+  let x	= 1
+  return
+end

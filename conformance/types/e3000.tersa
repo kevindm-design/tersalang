@@ -1,0 +1,10 @@
+# spec: design 8.1 no implicit conversion
+# expect: check-error E3000
+# fixed: let x: Int = true => let x: Int = 1
+module e3000
+
+function main() returns Unit
+do
+  let x: Int = true
+  return
+end

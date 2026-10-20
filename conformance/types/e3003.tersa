@@ -1,0 +1,14 @@
+# spec: design 8.9 T-Call arity
+# expect: check-error E3003
+# fixed: return f() => return f(1)
+module e3003
+
+function f(a: Int) returns Int
+do
+  return a
+end
+
+function main() returns Int
+do
+  return f()
+end

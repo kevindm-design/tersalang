@@ -1,0 +1,9 @@
+# spec: reference 5.7 set elements must be Hashable
+# expect: check-error E3042
+module e3042_set
+
+function main() returns Unit
+do
+  let s = Set.from_list([1.5])
+  return
+end

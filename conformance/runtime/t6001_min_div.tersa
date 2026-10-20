@@ -1,0 +1,10 @@
+# spec: language-reference 5.2a Int64.min div -1 traps
+# expect: trap T6001
+module t6001_min_div
+
+function main() returns Unit
+do
+  let minus_one = Int64.from_int(-1).expect_some("fits")
+  let _ = Int64.min div minus_one
+  return
+end

@@ -1,0 +1,8 @@
+version: "0.1"
+expression: 1
+statement: 1
+call: 1
+stdlib_base: 1
+int_add_words: max
+int_mul_words: product
+pow_words: square

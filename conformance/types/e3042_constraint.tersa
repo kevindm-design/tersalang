@@ -1,0 +1,14 @@
+# spec: reference 5.11 a Hashable constraint is checked at the call site
+# expect: check-error E3042
+module e3042_constraint
+
+function key[T: Hashable](value: T) returns List[T]
+do
+  return [value]
+end
+
+function main() returns Unit
+do
+  let keys = key(1.5)  # ERROR E3042: Float is not Hashable
+  return
+end

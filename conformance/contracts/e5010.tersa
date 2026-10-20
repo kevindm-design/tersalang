@@ -1,0 +1,16 @@
+# spec: design 10.4 an implementation cannot add requires
+# expect: check-error E5010
+# fixed:     requires a.value >= 0\n =>
+module e5010
+
+record Box
+  value: Int
+end
+
+implements Comparable[Box]
+  function compare(a: Box, b: Box) returns Ordering
+    requires a.value >= 0
+  do
+    return Equal
+  end
+end

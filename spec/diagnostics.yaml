@@ -1,0 +1,295 @@
+schema: tersa.diagnostic/0.1
+codes:
+  E0001:
+    message: "Source is not valid UTF-8 or starts with a byte-order mark"
+  E0002:
+    message: "Non-ASCII character outside a text literal or comment"
+  E0003:
+    message: "Tab character outside a text literal or comment"
+  E0004:
+    message: "Lone carriage return"
+  E0010:
+    message: "Identifier is not lower_snake_case"
+  E0011:
+    message: "Type name is not PascalCase"
+  E0012:
+    message: "Name is longer than 64 characters"
+  E0020:
+    message: "Integer literal exceeds the lexical bit cap"
+  E0021:
+    message: "Integer literal has a leading zero or a bad underscore"
+  E0022:
+    message: "Float literal needs digits on both sides of the dot"
+  E0023:
+    message: "Text literal contains a raw newline"
+  E0024:
+    message: "Text escape is not a Unicode scalar"
+  E0025:
+    message: "Hex or binary literal is malformed"
+    note: "No digits after 0x or 0b, or a digit outside that base. A leading zero or a bad underscore is E0021. A bad float shape is E0022."
+  E0026:
+    message: "Unterminated text literal"
+  E0027:
+    message: "Unknown text escape"
+  E0030:
+    message: "This symbol is not an operator"
+  E1000:
+    message: "Syntax error"
+    note: "The single general syntax-error code. The message names what was expected, for example \"expected `do` on its own line\". A reserved keyword where a name is required is also E1000: the lexer always emits a keyword as a keyword token, and the parser reports \"expected a ... name, found the keyword `x` (keywords are reserved and cannot be names)\"."
+  E1101:
+    message: "Only one with update is allowed"
+  E1102:
+    message: "Comparison operators are not associative"
+  W1103:
+    message: "and and or are mixed without parentheses"
+  W1104:
+    message: "Format-skip comment is not exactly `# fmt: skip`"
+    note: "A full-line comment that normalizes to #fmt:skip but is not the exact marker `# fmt: skip`. The file is not skipped and is formatted normally. tersa fmt and tersa check (with or without --parse-only) always emit it; tersa run, tersa sandbox, and tersa test emit it only alongside a check error or trap that stops the run; the harness never does."
+  E2000:
+    message: "Unknown name"
+    note: "A value name that is not declared, imported, or in the prelude. An unknown type name is E3008. This single-file tool also uses E2000 for a user module it cannot load."
+  E2001:
+    message: "Module name does not match the file name"
+  E2002:
+    message: "Import cycle"
+  E2003:
+    message: "Constant cycle"
+  E2004:
+    message: "Import qualifier clashes with another name"
+  E2005:
+    message: "Unknown module member"
+  E2010:
+    message: "break and continue are only allowed inside a loop"
+  E2011:
+    message: "expect is only allowed inside a test"
+  E2020:
+    message: "Name is already defined in this scope"
+  E2021:
+    message: "Duplicate name"
+    note: "Two top-level declarations with the same name, or an import that exposes a name already in scope, including a prelude name."
+  E2022:
+    message: "Ambiguous name"
+  E2030:
+    message: "`set` target is not a `var`"
+  E2101:
+    message: "Dependency content hash does not match tersa.lock"
+    note: "Not implemented. Nothing reads tersa.lock."
+  W3001:
+    message: "A non-Unit value is ignored"
+  E3000:
+    message: "Type mismatch"
+    note: "Fallback type error, used only when no more specific code applies."
+  E3002:
+    message: "A Result value is ignored"
+  E3003:
+    message: "Wrong number of arguments"
+    note: "A call, case constructor, or case pattern whose argument list has the wrong length. A case that has fields and is written with no argument list is E3006."
+  E3004:
+    message: "Unknown field or method"
+    note: "A field or method a non-record type does not have, or an unknown member of a type. An unknown record field is E3082. An unknown module member is E2005."
+  E3005:
+    message: "Expression statement must be a function call"
+  E3006:
+    message: "Case constructor is missing its arguments"
+    note: "A case that has fields, used as a bare name. The wrong number of arguments on a call or pattern is E3003."
+  E3007:
+    message: "Wrong number of type arguments"
+  E3008:
+    message: "Unknown type"
+    note: "A type name, or a record name in a construction. An unknown value name is E2000."
+  E3010:
+    message: "Cannot infer this type"
+  E3013:
+    message: "No property-test generator for this type"
+  E3020:
+    message: "Operator is not defined on Text"
+  E3021:
+    message: "Division operator is not defined on this type"
+  E3022:
+    message: "Condition must be Bool"
+  E3023:
+    message: "Integer literals are always Int"
+  E3024:
+    message: "Int and Int64 cannot be mixed"
+  E3025:
+    message: "Ordering operator is not defined for this type"
+  E3026:
+    message: "Type cannot be compared with =="
+  E3027:
+    message: "Builtin numeric function does not accept this type"
+  E3030:
+    message: "Match is not exhaustive"
+  W3031:
+    message: "Match arm is unreachable"
+  E3032:
+    message: "Function is missing a return"
+    note: "A path does not return or fail, or a bare return in a function whose return type is not Unit."
+  E3033:
+    message: "Return value does not match the function return type"
+  E3034:
+    message: "main must return Unit or Result[Unit, E]"
+  E3040:
+    message: "Orphan interface implementation"
+  E3041:
+    message: "This interface cannot be implemented by user code"
+  E3042:
+    message: "Type is not Hashable"
+  E3043:
+    message: "Duplicate interface implementation"
+  E3044:
+    message: "Interface implementation is missing a function"
+  E3045:
+    message: "Type is not Showable"
+  E3046:
+    message: "Type does not implement the interface"
+    note: "A type argument that misses a constraint (T: Comparable, T: Describable, T: Equatable), or a call to an interface function for a type with no implements block. A missed Showable is E3045 and a missed Hashable is E3042."
+  E3047:
+    message: "Function does not match the task interface"
+    note: "Harness only. The attempt has no top-level function a task's interface.tersa requires, or declares it with different type parameters (compared by position), constraints, parameter count or types, or return type. Parameter names, public, contracts, and effects are not compared; the task's effects grant governs effects. The episode stops at the check stage with C 0 and reward 0, and the diagnostic keeps full detail in the agent view, because the interface is public. A reference solution that does not match is I9025 when the task loads."
+  W3050:
+    message: "at can trap when the index is out of range"
+  E3060:
+    message: "try requires Option or Result"
+    note: "try on a value that is neither, or try in a function that does not return Option or a Result with the same error type."
+  E3070:
+    message: "A mutable collection cannot be stored or returned here"
+  E3071:
+    message: "A lambda cannot capture a var"
+  E3072:
+    message: "A resource must be bound with using"
+  E3080:
+    message: "Record is built with positional arguments"
+  E3081:
+    message: "Named arguments are only allowed when constructing a record"
+  E3082:
+    message: "Unknown or duplicate record field"
+    note: "Also a missing record field. Covers construction, with, field access, and set. A method a non-record type does not have is E3004."
+  E4001:
+    message: "Function is missing an effect"
+  E4002:
+    message: "An effectful function cannot be used as a value"
+  E4003:
+    message: "Unknown effect"
+  E4010:
+    message: "main uses an effect that was not granted"
+    note: "Reported before main runs, when main's declared effects are not in the host grants. A call that reaches an ungranted effect at run time, including inside a test, is T6302."
+  E4011:
+    message: "Function is not available in RL mode"
+  E4012:
+    message: "foreign declarations are only allowed in host mode"
+  E4013:
+    message: "Unknown standard-library module"
+  E4020:
+    message: "Value is not convertible at the Python boundary"
+  E5001:
+    message: "`result` or `old` is used outside `ensures`"
+  E5002:
+    message: "Contract uses an effect or a var"
+  E5010:
+    message: "Implementation adds a requires clause"
+  T6001:
+    message: "Int64 overflow"
+  T6002:
+    message: "Division by zero"
+  T6003:
+    message: "Int is too large for Float"
+  T6010:
+    message: "Text slice is out of range"
+  T6011:
+    message: "Index is out of range"
+  T6012:
+    message: "Use of a closed resource"
+    note: "Runtime safety net. A checked program cannot reach a closed resource (E3072, and using closes it after the body), so only a unit test that bypasses the checker produces it."
+  T6013:
+    message: "Invalid byte data"
+  T6020:
+    message: "expect_some failed"
+  T6021:
+    reserved: true
+    message: "Value is not Showable"
+    note: "Retired Oct 18, 2026 because show is now checked statically. Calling show on a type that is not Showable is E3045. Do not reuse this number."
+  T6030:
+    message: "fail"
+  T6031:
+    message: "expect failed"
+  T6101:
+    message: "requires failed"
+  T6102:
+    message: "ensures failed"
+  T6103:
+    message: "invariant failed"
+  T6104:
+    message: "Contract trapped"
+  T6201:
+    message: "Fuel exhausted"
+  T6202:
+    message: "Memory limit exceeded"
+  T6203:
+    message: "Call depth exceeded"
+  T6204:
+    message: "Integer size limit exceeded"
+  W6205:
+    message: "Console output was truncated"
+    note: "A reported result. The run is kept, and an RL episode is not discarded. This replaced I9012."
+  T6206:
+    message: "OS memory limit exceeded"
+    note: "A candidate died from the address cap or a memory fault: MemoryError, SIGKILL, SIGSEGV, SIGBUS, or SIGABRT. The episode scores reward 0 with correctness 0 and efficiency 0, and the harness exits 2. Every hidden test is listed by its real name. One that was running is trapped; tests that never started are failed. The kill diagnostic is on the episode. This applies under every isolation backend, including none."
+  T6207:
+    message: "OS CPU limit exceeded"
+    note: "A candidate died from the CPU cap (SIGXCPU). The episode scores reward 0 with correctness 0 and efficiency 0, and the harness exits 2. Every hidden test is listed by its real name. One that was running is trapped; tests that never started are failed. The kill diagnostic is on the episode. A process-count cap stops new processes with an error instead of this code."
+  T6208:
+    message: "Wall-clock limit exceeded"
+    note: "A candidate's own execution hit the in-process wall clock or the child-process timeout. The message names which clock. The episode scores reward 0 with correctness 0 and efficiency 0, and the harness exits 2, because a slow program must not be discarded. The host cannot be told apart from that program. Every hidden test is listed by its real name. One that was running is trapped; tests that never started are failed. A wall-clock stop while measuring the reference is I9013 on that reference episode. tersa harness validate then fails its gate and exits 1. tersa harness run falls back to the declared or limit basis with E_basis_reason reference_did_not_execute."
+  T6301:
+    message: "Capability scope violated"
+  T6302:
+    message: "Effect was not granted"
+    note: "A runtime trap. main's missing grants are E4010, before any code runs."
+  T6401:
+    message: "Foreign call failed"
+  T6402:
+    message: "Foreign value cannot be converted"
+  I9010:
+    message: "Invalid limit or grant configuration"
+    note: "Fuel, memory units, the integer cap, call depth, output bytes, wall_ms, and property-test case count, when the field is missing, not positive, or out of range. Also a host grant that names an unknown effect, a scoped effect (FileRead, FileWrite, Net) without its scope, or an unscoped effect with one, and a task.toml effects entry that gives a scope to an unscoped effect (Console=out). A limit field that is present but not an integer is I9022. Other task-load failures use I9014 through I9022."
+  I9011:
+    message: "Unicode version does not match the language pin"
+    note: "Not implemented. No Unicode version is pinned (the host unicodedata version is used), so nothing emits this code."
+  I9012:
+    reserved: true
+    message: "Console output was truncated"
+    note: "Retired. Output truncation is W6205, a reported result, not an infrastructure error. Do not reuse this number."
+  I9013:
+    message: "Wall-clock timeout stopped the run"
+    note: "Infrastructure only. The message names the backstop: in-process wall-clock backstop reached (N ms), or child process wall-clock backstop reached (N s). tersa sandbox and tersa run use this code and exit 4. A reference stopped during validation or measurement keeps this code on that reference episode. tersa harness validate fails its gate and exits 1. tersa harness run falls back to the declared or limit basis with E_basis_reason reference_did_not_execute. A candidate's own clock is T6208. An OS memory kill is T6206."
+  I9014:
+    message: "task.toml is missing"
+  I9015:
+    message: "Task language does not match this interpreter"
+  I9016:
+    message: "Unknown effect"
+  I9017:
+    message: "Effect cannot be granted in RL mode"
+    note: "FileRead, FileWrite, Net, and Python. A task.toml that lists one fails to load, with or without a scope (FileRead=data is refused at load time too, so a task grant never carries a scope). tersa sandbox, tersa run --mode rl, tersa test --mode rl, and run_sandboxed refuse the same grants before anything runs. All exit 4."
+  I9018:
+    message: "Reward weight is outside 0..1"
+    note: "check_credit and efficiency_weight are numbers outside 0..1. A reward field that is not a number is I9022."
+  I9019:
+    message: "Unknown property seed policy"
+  I9020:
+    message: "hidden/ is missing or has no tests"
+  I9021:
+    message: "A task source file did not parse"
+  I9022:
+    message: "task.toml field has the wrong type"
+    note: "Includes a limit field that is not an integer and a reward weight that is not a number."
+  I9023:
+    reserved: true
+    message: "OS CPU limit killed the process"
+    note: "Retired Oct 18, 2026. A candidate OS CPU kill is T6207, a scored trap (reward 0), not an infrastructure discard. Do not reuse this number."
+  I9024:
+    message: "Isolation backend is not available"
+    note: "The message names the backend. nsjail has no launcher. gVisor is not launched because it needs host cgroup access this build does not grant."
+  I9025:
+    message: "Reference solution does not match the task interface"
+    note: "The task fails to load (exit 4) when reference/solution.tersa parses but lacks a function interface.tersa requires or declares it differently. The message names the function and the difference, as in E3047."

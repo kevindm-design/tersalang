@@ -1,0 +1,10 @@
+# spec: design 6.8 E0030
+# expect: check-error E0030
+# fixed: 1 % 2 => 1 mod 2
+module bad_symbol
+
+function main() returns Unit
+do
+  let n = 1 % 2
+  return
+end

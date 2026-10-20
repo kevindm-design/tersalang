@@ -1,0 +1,13 @@
+# spec: design 9.6 at after a bounds check
+# expect: no-warn W3050
+module w3050_checked
+
+function main() returns Unit
+do
+  let xs = [1, 2, 3]
+  let i = 0
+  if i >= 0 and i < xs.length() then
+    let _ = xs.at(i)
+  end
+  return
+end

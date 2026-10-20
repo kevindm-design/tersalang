@@ -1,0 +1,18 @@
+# spec: reference 5.11, 5.12 a Showable constraint is checked at the call site
+# expect: check-error E3045
+module e3045_constraint
+
+function render[T: Showable](value: T) returns Text
+do
+  return show(value)
+end
+
+function main() returns Unit
+do
+  let f = function (x: Int) returns Int
+    do
+      x
+    end
+  let text = render(f)  # ERROR E3045: a function is not Showable
+  return
+end

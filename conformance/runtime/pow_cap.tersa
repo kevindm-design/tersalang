@@ -1,0 +1,11 @@
+# spec: design 9.1 integer size cap
+# expect: trap T6204
+# fixed: pow(2, 10000000) => pow(2, 100)
+module pow_cap
+
+import std.math exposing pow
+
+public function main() returns Unit
+do
+  let n = pow(2, 10000000)
+end

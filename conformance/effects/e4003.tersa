@@ -1,0 +1,10 @@
+# spec: design 12.1 unknown effect
+# expect: check-error E4003
+# fixed: uses NotReal => uses Console
+module e4003
+
+function main() returns Unit
+  uses NotReal
+do
+  return
+end

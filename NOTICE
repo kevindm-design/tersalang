@@ -1,0 +1,12 @@
+Tersalang
+Copyright 2026 Kevin Mitchell
+
+The source code in this repository is licensed under the Apache License, Version 2.0
+(LICENSE, or https://www.apache.org/licenses/LICENSE-2.0).
+
+The specification exports in spec/*.md and the documents in docs/ are licensed under
+Creative Commons Attribution 4.0 International (LICENSE-docs, or
+https://creativecommons.org/licenses/by/4.0/), unless a file says otherwise.
+Everything else, including the grammar files in spec/, is Apache-2.0.
+
+The language was first called AIOWL.

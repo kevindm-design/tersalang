@@ -1,0 +1,10 @@
+# spec: design 6.7 E0024
+# expect: check-error E0024
+# fixed: "\\u{D800}" => "\\u{E9}"
+module bad_unicode
+
+function main() returns Unit
+do
+  let t: Text = "\u{D800}"
+  return
+end

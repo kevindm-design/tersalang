@@ -1,0 +1,14 @@
+# spec: design 9.8 show requires Showable
+# expect: check-error E3045
+# fixed: return show(f) => return "a file"
+module e3045_resource
+
+function present(f: File) returns Text
+do
+  return show(f)
+end
+
+function main() returns Unit
+do
+  return
+end

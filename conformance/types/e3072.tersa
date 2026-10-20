@@ -1,0 +1,12 @@
+# spec: design 11.3 using binds a resource
+# expect: check-error E3072
+# no-fix: the fix binds a real resource, such as a `File` from `File.open`.
+module e3072
+
+function main() returns Unit
+do
+  using f = 1
+  do
+    return
+  end
+end

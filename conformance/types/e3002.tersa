@@ -1,0 +1,11 @@
+# spec: design 8 ignored Result
+# expect: check-error E3002
+# fixed:   File.read_text( =>   let _ = File.read_text(
+module e3002
+
+function main() returns Unit
+  uses FileRead
+do
+  File.read_text("a.txt")
+  return
+end

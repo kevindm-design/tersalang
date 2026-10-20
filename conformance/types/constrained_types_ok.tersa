@@ -1,0 +1,39 @@
+# spec: reference 5.11 records and choices with constrained type parameters
+# allow: Console
+# expect: stdout
+# |2 Less
+module constrained_types_ok
+
+import std.console exposing print
+
+record Keyed[K: Hashable, V]
+  key: K
+  value: V
+end
+
+choice Ranked[T: Comparable]
+  case Unranked
+  case Best(item: T)
+end
+
+function rank[T: Comparable](a: T, b: T) returns Ranked[T]
+do
+  if compare(a, b) == Less then
+    return Best(b)
+  end
+  return Best(a)
+end
+
+function main() returns Unit
+  uses Console
+do
+  let pair = Keyed(key = "a", value = 2)
+  let best = rank(1, 3)
+  match best
+    case Best(item) then
+      print(Text.join([show(pair.value), show(compare(item - 2, item))], " "))
+    case Unranked then
+      print("none")
+  end
+  return
+end

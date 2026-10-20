@@ -1,0 +1,14 @@
+# spec: design 8.4 unknown record field
+# expect: check-error E3082
+# fixed: , extra = 2 =>
+module e3082
+
+record Box
+  value: Int
+end
+
+function main() returns Unit
+do
+  let _ = Box(value = 1, extra = 2)
+  return
+end

@@ -1,0 +1,11 @@
+module tests
+
+test "h_forty_one"
+do
+  expect add_one(41) == 42
+end
+
+test "h_property" for all n: Int
+do
+  expect add_one(n) == n + 1
+end

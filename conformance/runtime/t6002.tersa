@@ -1,0 +1,10 @@
+# spec: design 9.1 division by zero
+# expect: trap T6002
+# fixed: 1 div 0 => 1 div 1
+module t6002
+
+function main() returns Unit
+do
+  let _ = 1 div 0
+  return
+end

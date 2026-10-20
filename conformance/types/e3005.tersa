@@ -1,0 +1,10 @@
+# spec: design 7.3 expression statement
+# expect: check-error E3005
+# fixed: do\n  1 => do\n  let _ = 1
+module e3005
+
+function main() returns Unit
+do
+  1
+  return
+end

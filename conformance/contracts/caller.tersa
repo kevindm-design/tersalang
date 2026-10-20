@@ -1,0 +1,15 @@
+# spec: design 10.4 requires blames the caller
+# expect: trap T6101
+# fixed: safe_divide(1, 0) => safe_divide(1, 1)
+module caller
+
+public function safe_divide(a: Int, b: Int) returns Int
+  requires b != 0
+do
+  return a div b
+end
+
+public function main() returns Unit
+do
+  let n = safe_divide(1, 0)
+end

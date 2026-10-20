@@ -1,0 +1,14 @@
+# spec: reference 5.11 a record's type arguments must meet its constraints
+# expect: check-error E3042
+module e3042_record_param
+
+record Keyed[K: Hashable, V]
+  key: K
+  value: V
+end
+
+function main() returns Unit
+do
+  let pair = Keyed(key = 1.5, value = 2)  # ERROR E3042: Float is not Hashable
+  return
+end

@@ -1,0 +1,13 @@
+# spec: design 9.8 show requires Showable
+# expect: check-error E3045
+module e3045_function
+
+function main() returns Unit
+do
+  let f = function (x: Int) returns Int
+    do
+      x
+    end
+  let _ = show(f)
+  return
+end

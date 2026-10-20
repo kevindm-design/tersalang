@@ -1,0 +1,9 @@
+# spec: language-reference 5.2a Int64.min mod -1 is 0
+# expect: tests-pass
+module int64_min_mod
+
+test "the remainder fits even when the quotient does not"
+do
+  let minus_one = Int64.from_int(-1).expect_some("fits")
+  expect Int64.min mod minus_one == Int64.from_int(0).expect_some("fits")
+end

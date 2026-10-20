@@ -1,0 +1,12 @@
+# spec: design 6.2 function types do not open a lambda frame
+# expect: check-ok
+module return_fn_type
+
+function main() returns function(Int) returns Int
+do
+  let xs = [1, 2]
+  return function (n: Int) returns Int
+    do
+      n
+    end
+end

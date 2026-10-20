@@ -1,0 +1,10 @@
+# spec: design 6.7 E0022
+# expect: check-error E0022
+# fixed: let f = .5 => let f = 0.5
+module float_dot
+
+function main() returns Unit
+do
+  let f = .5
+  return
+end

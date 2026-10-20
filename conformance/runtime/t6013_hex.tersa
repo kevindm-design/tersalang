@@ -1,0 +1,10 @@
+# spec: language reference appendix C
+# expect: trap T6013
+# fixed: "abc" => "abcd"
+module t6013_hex
+
+function main() returns Unit
+do
+  let _ = Bytes.of_hex("abc")
+  return
+end

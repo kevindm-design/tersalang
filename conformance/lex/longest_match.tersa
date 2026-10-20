@@ -1,0 +1,8 @@
+# spec: design 6.8 longest match for <= and >=
+# expect: check-ok
+module longest_match
+
+function main() returns Bool
+do
+  return 1 <= 2 and 3 >= 2
+end

@@ -1,0 +1,12 @@
+# spec: design 9.3 transcendentals are rejected in RL
+# expect: check-error E4011
+# fixed: math.sin(0.0) => math.sqrt(0.0)
+# mode: rl
+module e4011
+
+import std.math
+
+function main() returns Float
+do
+  return math.sin(0.0)
+end

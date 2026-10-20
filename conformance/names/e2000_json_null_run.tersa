@@ -1,0 +1,9 @@
+# spec: design 8 unknown name; tersa run reports JsonNull with the same code as tersa check
+# expect: run-error E2000
+module e2000_json_null_run
+
+function main() returns Unit
+do
+  let _ = JsonNull
+  return
+end

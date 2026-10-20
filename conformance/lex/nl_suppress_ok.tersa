@@ -1,0 +1,14 @@
+# fmt: skip
+# spec: design 6.2 newlines inside brackets and after operators are not tokens
+# expect: check-ok
+module nl_suppress_ok
+
+function main() returns Int
+do
+  let x = 1 +
+    2
+  let y = (
+    3
+  )
+  return x + y
+end

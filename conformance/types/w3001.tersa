@@ -1,0 +1,10 @@
+# spec: design 8 ignored call result
+# expect: check-warn W3001
+# fixed:   show(1) =>   let _ = show(1)
+module w3001
+
+function main() returns Unit
+do
+  show(1)
+  return
+end

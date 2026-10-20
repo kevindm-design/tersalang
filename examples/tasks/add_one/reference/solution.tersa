@@ -1,0 +1,11 @@
+module solution
+
+function add_one(n: Int) returns Int
+do
+  return n + 1
+end
+
+function main() returns Unit
+do
+  return
+end

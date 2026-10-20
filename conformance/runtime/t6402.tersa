@@ -1,0 +1,16 @@
+# spec: language reference appendix C
+# expect: trap T6402
+# fixed: factorial(21) => factorial(20)
+# mode: host
+# allow: Python
+module t6402
+
+foreign "python:math.factorial" function factorial(n: Int) returns Int64
+  uses Python
+
+function main() returns Unit
+  uses Python
+do
+  let _ = factorial(21)
+  return
+end

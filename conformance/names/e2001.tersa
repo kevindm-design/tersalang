@@ -1,0 +1,9 @@
+# spec: design 13.1 module name
+# expect: check-error E2001
+# fixed: module not_the_stem => module e2001
+module not_the_stem
+
+function main() returns Unit
+do
+  return
+end

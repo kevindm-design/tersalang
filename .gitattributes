@@ -1,0 +1,5 @@
+* text=auto eol=lf
+conformance/lex/crlf_ok.tersa text eol=crlf
+conformance/lex/bom.tersa -text
+conformance/lex/lone_cr.tersa -text
+conformance/lex/bad_utf8.tersa -text

@@ -1,0 +1,15 @@
+# spec: design 10.5 invariant
+# expect: trap T6103
+# fixed: Box(value = 0) => Box(value = 1)
+module t6103
+
+record Box
+  value: Int
+  invariant value > 0
+end
+
+function main() returns Unit
+do
+  let _ = Box(value = 0)
+  return
+end

@@ -1,0 +1,9 @@
+# spec: design 7.4 E1102
+# expect: check-error E1102
+# fixed: 1 < 2 < 3 => 1 < 2 and 2 < 3
+module chained_compare
+
+function main() returns Bool
+do
+  return 1 < 2 < 3
+end

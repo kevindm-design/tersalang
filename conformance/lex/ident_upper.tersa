@@ -1,0 +1,8 @@
+# spec: design 6.5 E0011
+# expect: check-error E0011
+# fixed: record Bad_Name => record BadName
+module ident_upper
+
+record Bad_Name
+  value: Int
+end

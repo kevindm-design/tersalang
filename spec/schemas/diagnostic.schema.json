@@ -1,0 +1,22 @@
+{
+  "$id": "tersa.diagnostic/0.1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tersalang diagnostic",
+  "type": "object",
+  "required": ["schema", "code", "severity", "category", "message", "file", "span", "related", "blame", "values", "fix", "docs_url"],
+  "properties": {
+    "schema": {"const": "tersa.diagnostic/0.1"},
+    "code": {"type": "string"},
+    "severity": {"enum": ["error", "warning", "info"]},
+    "category": {"type": "string"},
+    "message": {"type": "string"},
+    "file": {"type": "string"},
+    "span": {"type": "object"},
+    "related": {"type": "array"},
+    "blame": {"type": ["string", "null"]},
+    "values": {"type": ["object", "null"]},
+    "fix": {"type": ["object", "null"]},
+    "docs_url": {"type": "string"}
+  },
+  "additionalProperties": false
+}

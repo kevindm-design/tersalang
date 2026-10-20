@@ -1,0 +1,12 @@
+# spec: reference 5.11 generic code may call an interface function only through a constraint
+# expect: check-error E3046
+module e3046_generic
+
+interface Describable[T]
+  function describe(value: T) returns Text
+end
+
+function label[T](value: T) returns Text
+do
+  return describe(value)  # ERROR E3046: T is not known to implement Describable
+end

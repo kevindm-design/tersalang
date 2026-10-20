@@ -1,0 +1,10 @@
+# spec: design 18.2.1 W1104 near-miss of the format-skip marker
+# expect: check-warn W1104
+# fixed: #fmt:skip => # fmt: skip
+#fmt:skip
+module w1104_fmt_skip
+
+function main() returns Unit
+do
+  return
+end

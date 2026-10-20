@@ -1,0 +1,19 @@
+# spec: design 9.8 show of a record
+# allow: Console
+# expect: stdout
+# |Point(x = 1, y = 2)
+module show_record
+
+import std.console exposing print
+
+record Point
+  x: Int
+  y: Int
+end
+
+function main() returns Unit
+  uses Console
+do
+  print(show(Point(x = 1, y = 2)))
+  return
+end

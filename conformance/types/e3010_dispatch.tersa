@@ -1,0 +1,12 @@
+# spec: reference 5.11 generic code needs an argument to pick an implementation
+# expect: check-error E3010
+module e3010_dispatch
+
+interface Default[T]
+  function default() returns T
+end
+
+function make[T: Default]() returns T
+do
+  return default()  # ERROR E3010: no argument has type T
+end

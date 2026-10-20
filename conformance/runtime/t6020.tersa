@@ -1,0 +1,11 @@
+# spec: design 9.5 expect_some
+# expect: trap T6020
+# fixed: n.expect_some("missing") => n.unwrap_or(0)
+module t6020
+
+function main() returns Unit
+do
+  let n: Option[Int] = None
+  let _ = n.expect_some("missing")
+  return
+end

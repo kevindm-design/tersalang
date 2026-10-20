@@ -1,0 +1,9 @@
+# spec: language reference resolved item 1
+# expect: check-error E1000
+module same_line_lambda
+
+function main() returns Unit
+do
+  let f = function (x: Int) returns Int do x end
+  return
+end

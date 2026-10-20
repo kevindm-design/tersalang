@@ -1,0 +1,6 @@
+module task_spec
+
+interface Solution
+  function add_one(n: Int) returns Int
+    ensures result == n + 1
+end

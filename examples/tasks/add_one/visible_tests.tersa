@@ -1,0 +1,6 @@
+module visible_tests
+
+test "v_one"
+do
+  expect add_one(1) == 2
+end

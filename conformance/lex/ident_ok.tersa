@@ -1,0 +1,16 @@
+# spec: design 6.5 snake_case, PascalCase, and the wildcard
+# expect: check-ok
+module ident_ok
+
+record PointValue
+  x_pos: Int
+end
+
+function main() returns Int
+do
+  let value = PointValue(x_pos = 4)
+  match value.x_pos
+    case _ then
+      return value.x_pos
+  end
+end

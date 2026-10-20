@@ -1,0 +1,14 @@
+# spec: reference Appendix A implements needs the interface's type arguments
+# expect: check-error E1000
+module implements_type_args
+
+interface Solution
+  function add_one(n: Int) returns Int
+end
+
+implements Solution  # ERROR E1000: no type arguments
+  function add_one(n: Int) returns Int
+  do
+    return n + 1
+  end
+end

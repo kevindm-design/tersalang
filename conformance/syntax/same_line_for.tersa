@@ -1,0 +1,10 @@
+# spec: language reference resolved item 1
+# expect: check-error E1000
+module same_line_for
+
+function main() returns Unit
+do
+  for x in [1] do
+    return
+  end
+end

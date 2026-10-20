@@ -1,0 +1,8 @@
+# spec: language reference appendix C
+# mode: host
+# expect: check-error E4020
+# fixed: apply(f: function(Int) returns Int, x: Int) => apply(x: Int)
+module e4020
+
+foreign "python:mylib.apply" function apply(f: function(Int) returns Int, x: Int) returns Int
+  uses Python

@@ -1,0 +1,11 @@
+# spec: design 6.7 E0023
+# expect: check-error E0023
+# fixed: "a\nb" => "a\\nb"
+module raw_newline
+
+function main() returns Unit
+do
+  let t: Text = "a
+b"
+  return
+end

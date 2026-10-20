@@ -1,0 +1,122 @@
+// Tersalang grammar for the Lark LALR oracle.
+// The hand-written parser in src/tersalang/parser.py is the user-facing front end.
+// NAMED_ARG is a terminal because the reference lexer emits it inside parentheses.
+// This file's lexer only has to be conflict-free; it is not used to run programs.
+
+start: file
+
+// One item list: two separate NL repetitions are a reduce/reduce conflict.
+// Imports and declarations may appear in any order, matching the hand parser.
+file: NL* module_decl (import_decl | top_decl | NL)*
+
+module_decl: "module" module_path NL
+import_decl: "import" module_path ["as" LOWER] ["exposing" name ("," name)*] NL
+module_path: LOWER ("." LOWER)*
+name: LOWER | UPPER
+
+top_decl: ["public"] (function_decl | record_decl | choice_decl | interface_decl | const_decl | foreign_decl)
+        | implements_decl
+        | test_decl
+
+const_decl: "let" LOWER ":" type "=" expression NL
+function_decl: header "do" NL block "end" NL
+header: "function" LOWER type_params? "(" params? ")" "returns" type NL uses? contract*
+uses: "uses" UPPER ("," UPPER)* NL
+contract: ("requires" | "ensures") expression NL
+params: param ("," param)* ","?
+param: LOWER ":" type
+type_params: "[" type_param ("," type_param)* "]"
+type_param: UPPER (":" constraint ("and" constraint)*)?
+constraint: UPPER type_args?
+
+type: type_named | type_function
+type_named: qualified_upper type_args?
+qualified_upper: (module_path ".")? UPPER
+type_function: "function" "(" (type ("," type)*)? ")" "returns" type
+type_args: "[" type ("," type)* "]"
+
+record_decl: "record" UPPER type_params? NL record_field* invariant* "end" NL
+record_field: LOWER ":" type NL
+invariant: "invariant" expression NL
+choice_decl: "choice" UPPER type_params? NL choice_case* "end" NL
+choice_case: "case" UPPER ("(" params ")")? NL
+interface_decl: "interface" UPPER type_params? NL header* "end" NL
+implements_decl: "implements" UPPER type_args NL function_decl* "end" NL
+foreign_decl: "foreign" TEXT header
+test_decl: "test" TEXT ("for" "all" params)? NL "do" NL block "end" NL
+
+block: (statement? NL)*
+?statement: let_stmt | var_stmt | set_stmt | return_stmt | fail_stmt | expect_stmt
+          | break_stmt | continue_stmt | if_stmt | match_stmt | while_stmt | for_stmt
+          | using_stmt | expr_stmt
+let_stmt: "let" (LOWER | "_") (":" type)? "=" expression
+var_stmt: "var" (LOWER | "_") (":" type)? "=" expression
+set_stmt: "set" place "=" expression
+return_stmt: "return" expression?
+fail_stmt: "fail" expression
+expect_stmt: "expect" expression
+break_stmt: "break"
+continue_stmt: "continue"
+place: LOWER ("." LOWER)*
+if_stmt: "if" expression "then" block elseif_arm* else_arm? "end"
+elseif_arm: "elseif" expression "then" block
+else_arm: "else" block
+match_stmt: "match" expression NL match_arm* "end"
+match_arm: "case" pattern ("if" expression)? "then" block
+while_stmt: "while" expression NL "do" NL block "end"
+for_stmt: "for" LOWER "in" expression NL "do" NL block "end"
+using_stmt: "using" LOWER "=" expression NL "do" NL block "end"
+expr_stmt: expression
+
+?pattern: "_" | LOWER | literal | "-" INT | "-" FLOAT | ctor_pattern
+ctor_pattern: qualified_upper ("(" pattern ("," pattern)* ")")?
+
+?expression: lambda | or_expr
+lambda: "function" "(" params? ")" "returns" type NL "do" NL NL* expression NL NL* "end"
+?or_expr: and_expr | or_expr_tail
+or_expr_tail: and_expr "or" and_expr ("or" and_expr)*
+?and_expr: not_expr | and_expr_tail
+and_expr_tail: not_expr "and" not_expr ("and" not_expr)*
+?not_expr: "not" not_expr | comparison
+?comparison: additive | additive COMP_OP additive
+?additive: multiplicative | additive_tail
+additive_tail: multiplicative ADD_OP multiplicative (ADD_OP multiplicative)*
+?multiplicative: prefix | multiplicative_tail
+multiplicative_tail: prefix MUL_OP prefix (MUL_OP prefix)*
+?prefix: "-" prefix | "try" prefix | update
+?update: postfix | postfix "with" "(" field_init ("," field_init)* ","? ")"
+?postfix: primary | postfix_tail
+postfix_tail: primary postfix_op+
+postfix_op: "(" args? ")" | "." name
+args: arg ("," arg)* ","?
+arg: NAMED_ARG? expression
+field_init: LOWER "=" expression
+?primary: literal | LOWER | UPPER | "result" | "old" "(" expression ")"
+        | "(" expression ")" | list_literal | map_literal
+list_literal: "[" (expression ("," expression)* ","?)? "]"
+map_literal: "{" (entry ("," entry)* ","?)? "}"
+entry: expression ":" expression
+?literal: INT | FLOAT | TEXT | "true" | "false"
+
+COMP_OP: "==" | "!=" | "<=" | ">=" | "<" | ">"
+ADD_OP: "+" | "-"
+MUL_OP: "*" | "/" | "div" | "mod"
+
+// Priority 1: LOWER's keyword lookahead makes its pattern string longer, so
+// the default alternation would take `name` and leave `=`. Keywords are not
+// named arguments; the hand lexer emits the keyword token first.
+NAMED_ARG.1: /(?!(?:and|all|alias|as|async|await|break|case|choice|continue|div|do|else|elseif|end|ensures|expect|exposing|fail|false|for|foreign|function|if|implements|import|in|interface|invariant|let|match|mod|module|not|old|or|parallel|public|receive|record|requires|result|return|returns|send|set|spawn|test|then|true|try|type|uses|using|var|while|with)\b)[a-z][a-z0-9_]*[ \t]*=(?!=)/
+// Keywords are reserved everywhere. A negative lookahead keeps `do` from
+// being an identifier when the contextual lexer would not otherwise offer
+// the keyword terminal.
+LOWER: /(?!(?:and|all|alias|as|async|await|break|case|choice|continue|div|do|else|elseif|end|ensures|expect|exposing|fail|false|for|foreign|function|if|implements|import|in|interface|invariant|let|match|mod|module|not|old|or|parallel|public|receive|record|requires|result|return|returns|send|set|spawn|test|then|true|try|type|uses|using|var|while|with)\b)[a-z][a-z0-9_]*/
+UPPER: /[A-Z][A-Za-z0-9]*/
+INT: /0x[0-9a-fA-F][0-9a-fA-F_]*|0b[01][01_]*|[0-9][0-9_]*/
+// Priority 1: otherwise the longer INT pattern wins the alternation and
+// swallows the digits before the decimal point.
+FLOAT.1: /[0-9][0-9_]*\.[0-9][0-9_]*(e[+-]?[0-9]+)?/
+TEXT: /"[^"\n]*"/
+NL: /\r?\n/
+
+%ignore /[ \t]+/
+%ignore /#[^\n]*/

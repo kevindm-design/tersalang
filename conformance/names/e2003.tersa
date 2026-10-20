@@ -1,0 +1,8 @@
+# spec: design 8 constant cycle
+# expect: check-error E2003
+# fixed: let b: Int = a => let b: Int = 1
+module e2003
+
+let a: Int = b
+
+let b: Int = a

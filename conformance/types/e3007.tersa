@@ -1,0 +1,10 @@
+# spec: design 8.5 type arity
+# expect: check-error E3007
+# fixed: let x: Option = None => let x: Option[Int] = None
+module e3007
+
+function main() returns Unit
+do
+  let x: Option = None
+  return
+end

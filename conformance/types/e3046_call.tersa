@@ -1,0 +1,13 @@
+# spec: reference 5.12 an interface function needs an implementation for the argument's type
+# expect: check-error E3046
+module e3046_call
+
+interface Describable[T]
+  function describe(value: T) returns Text
+end
+
+function main() returns Unit
+do
+  let text = describe(3)  # ERROR E3046: Int does not implement Describable
+  return
+end

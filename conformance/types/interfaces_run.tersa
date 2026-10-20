@@ -1,0 +1,98 @@
+# spec: reference 5.11-5.13 interface calls pick the argument type's implementation
+# allow: Console
+# expect: stdout
+# |Rect 2x3 Rect 2x3
+# |<Rect 2x3> <square 4>
+# |Greater Equal Less
+# |9 Rect(width = 1, height = 9)
+# |["Rect 2x3", "Rect 2x3"]
+# |9
+module interfaces_run
+
+import std.console exposing print
+
+record Rect
+  width: Int
+  height: Int
+end
+
+choice Shape
+  case Dot
+  case Square(side: Int)
+end
+
+interface Describable[T]
+  function describe(value: T) returns Text
+    ensures not Text.is_empty(result)
+end
+
+implements Describable[Rect]
+  function describe(r: Rect) returns Text
+  do
+    return Text.join(["Rect ", show(r.width), "x", show(r.height)], "")
+  end
+end
+
+implements Describable[Shape]
+  function describe(value: Shape) returns Text
+  do
+    match value
+      case Dot then
+        return "dot"
+      case Square(side) then
+        return Text.concat("square ", show(side))
+    end
+  end
+end
+
+implements Comparable[Rect]
+  function compare(a: Rect, b: Rect) returns Ordering
+  do
+    return Int.compare(a.width * a.height, b.width * b.height)
+  end
+end
+
+function label[T: Describable](x: T) returns Text
+do
+  return Text.concat("<", Text.concat(describe(x), ">"))
+end
+
+function biggest[T: Comparable](xs: List[T], start: T) returns T
+do
+  var best = start
+  for x in xs
+  do
+    if compare(x, best) == Greater then
+      set best = x
+    end
+  end
+  return best
+end
+
+function area(s: Shape) returns Int
+do
+  match s
+    case Dot then
+      return 0
+    case Square(side) then
+      return side * side
+  end
+end
+
+function main() returns Unit
+  uses Console
+do
+  let r = Rect(width = 2, height = 3)
+  print(Text.join([describe(r), r.describe()], " "))
+  print(Text.join([label(r), label(Square(4))], " "))
+  let small = Rect(width = 1, height = 1)
+  print(Text.join([show(compare(r, small)), show(r.compare(r)), show(compare("a", "b"))], " "))
+  print(
+    Text.join(
+      [show(biggest([3, 9, 2], 0)), show(biggest([Rect(width = 1, height = 9), r], r))],
+      " ",
+    ),
+  )
+  print(show(List.map([r, r], describe)))
+  print(show(Square(3).area()))
+end

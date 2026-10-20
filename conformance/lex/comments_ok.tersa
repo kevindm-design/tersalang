@@ -1,0 +1,16 @@
+# spec: design 6.4 line comments and doc comments
+# expect: check-ok
+module comments_ok
+
+## Adds one.
+## Example: bump(1) == 2
+function bump(n: Int) returns Int
+do
+  return n + 1
+end
+
+function main() returns Unit
+do
+  let _ = bump(1)  # trailing comment
+  return
+end

@@ -1,0 +1,14 @@
+# spec: design 7.4 E1101
+# expect: check-error E1101
+# fixed: box with (value = 2) with (value = 3) => (box with (value = 2)) with (value = 3)
+module double_with
+
+record Box
+  value: Int
+end
+
+function main() returns Box
+do
+  let box = Box(value = 1)
+  return box with (value = 2) with (value = 3)
+end

@@ -1,0 +1,18 @@
+# spec: reference Appendix A NAMED_ARG is `name =`, never `name ==`
+# allow: Console
+# expect: stdout
+# |true
+# |false
+module equality_argument
+
+import std.console exposing print
+
+function main() returns Unit
+  uses Console
+do
+  let x = 1
+  let y = 2
+  print(show(x == 1))
+  print(show(x == y))
+  return
+end

@@ -1,0 +1,17 @@
+# spec: design 9.8 show requires Showable
+# expect: check-error E3045
+module e3045_record
+
+record Box
+  f: function() returns Int
+end
+
+function main() returns Unit
+do
+  let box = Box(f = function () returns Int
+    do
+      1
+    end)
+  let _ = show(box)
+  return
+end

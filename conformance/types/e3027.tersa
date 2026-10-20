@@ -1,0 +1,12 @@
+# spec: design 9 numeric helpers
+# expect: check-error E3027
+# fixed: math.min(true, false) => math.min(1, 2)
+module e3027
+
+import std.math
+
+function main() returns Bool
+do
+  let _ = math.min(true, false)
+  return true
+end

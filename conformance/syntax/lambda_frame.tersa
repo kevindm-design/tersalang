@@ -1,0 +1,17 @@
+# spec: design 6.2 lambda-frame rule
+# expect: check-ok
+module lambda_frame
+
+function apply(f: function(Int) returns Int) returns Int
+do
+  return f(1)
+end
+
+function main() returns Int
+do
+  let n = apply(function (x: Int) returns Int
+    do
+      x + 1
+    end)
+  return n
+end

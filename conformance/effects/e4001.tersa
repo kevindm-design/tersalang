@@ -1,0 +1,12 @@
+# spec: design 12.1 missing effect
+# expect: check-error E4001
+# fixed: returns Unit\ndo => returns Unit\n  uses Console\ndo
+module e4001
+
+import std.console exposing print
+
+function main() returns Unit
+do
+  print("hi")
+  return
+end

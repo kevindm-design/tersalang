@@ -1,0 +1,10 @@
+# spec: design 6.1 non-ASCII is allowed in text and comments
+# expect: check-ok
+# café is a comment
+module utf8_ok
+
+function main() returns Unit
+do
+  let greeting: Text = "café"
+  return
+end

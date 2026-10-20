@@ -1,0 +1,8 @@
+# spec: design 11 mutable values stay local
+# expect: check-error E3070
+# fixed: items: MutableList[Int] => items: List[Int]
+module e3070
+
+record Box
+  items: MutableList[Int]
+end

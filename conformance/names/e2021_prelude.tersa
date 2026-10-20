@@ -1,0 +1,11 @@
+# spec: language reference 13.2
+# expect: check-error E2021
+module e2021_prelude
+
+import std.file exposing File, FileError
+import std.text exposing Utf8Error
+
+function main() returns Unit
+do
+  return
+end

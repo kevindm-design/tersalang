@@ -1,0 +1,17 @@
+# spec: design 10.4 a contract that traps
+# expect: trap T6104
+# fixed: (1 div n) == 1 => n != 0
+# fixed: f(0) => f(1)
+module t6104
+
+function f(n: Int) returns Int
+  requires (1 div n) == 1
+do
+  return n
+end
+
+function main() returns Unit
+do
+  let _ = f(0)
+  return
+end

@@ -1,0 +1,9 @@
+# spec: design 8 unknown name; the JSON null is Null or Json.Null, and there is no JsonNull
+# expect: check-error E2000
+module e2000_json_null
+
+function main() returns Unit
+do
+  let _ = JsonNull
+  return
+end

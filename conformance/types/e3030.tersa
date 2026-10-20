@@ -1,0 +1,12 @@
+# spec: design 8.8 exhaustiveness
+# expect: check-error E3030
+# fixed:       return 1\n  end =>       return 1\n    case false then\n      return 0\n  end
+module e3030
+
+function main() returns Int
+do
+  match true
+    case true then
+      return 1
+  end
+end

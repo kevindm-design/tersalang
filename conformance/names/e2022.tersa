@@ -1,0 +1,18 @@
+# spec: design 8 ambiguous case
+# expect: check-error E2022
+# fixed: case Overlap(value: Text) => case Other(value: Text)
+module e2022
+
+choice Left
+  case Overlap(value: Int)
+end
+
+choice Right
+  case Overlap(value: Text)
+end
+
+function main() returns Unit
+do
+  let _ = Overlap(1)
+  return
+end

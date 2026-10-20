@@ -1,0 +1,123 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tersalang"
+dynamic = ["version"]
+description = "Reference interpreter for Tersalang, a word-based programming language for LLMs to write and RL harnesses to score."
+readme = "README.md"
+requires-python = ">=3.12"
+# The wheel is Apache-2.0 code; the sdist also carries the CC BY 4.0 spec and docs.
+license = "Apache-2.0 AND CC-BY-4.0"
+license-files = ["LICENSE", "LICENSE-docs", "NOTICE"]
+authors = [{ name = "Kevin Mitchell" }]
+maintainers = [{ name = "Kevin Mitchell" }]
+keywords = [
+    "tersalang",
+    "tersa",
+    "programming-language",
+    "interpreter",
+    "llm",
+    "reinforcement-learning",
+    "gbnf",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Interpreters",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/kevindm-design/tersalang"
+Repository = "https://github.com/kevindm-design/tersalang"
+Documentation = "https://github.com/kevindm-design/tersalang/tree/main/docs"
+Specification = "https://github.com/kevindm-design/tersalang/tree/main/spec"
+Issues = "https://github.com/kevindm-design/tersalang/issues"
+Changelog = "https://github.com/kevindm-design/tersalang/blob/main/CHANGELOG.md"
+
+[project.scripts]
+tersa = "tersalang.cli:main"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.112",
+    "lark>=1.2",
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "pyyaml>=6.0.2",
+    "ruff>=0.8",
+]
+
+[tool.hatch.version]
+path = "src/tersalang/version.py"
+pattern = 'TOOL_VERSION = "(?P<version>[^"]+)"'
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tersalang"]
+
+# `tersa grammar` reads these; spec/ stays the only copy in the repository.
+[tool.hatch.build.targets.wheel.force-include]
+"spec/tersa.lark" = "tersalang/grammar/tersa.lark"
+"spec/tersa.ebnf" = "tersalang/grammar/tersa.ebnf"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/tersalang",
+    "spec",
+    "conformance",
+    "examples",
+    "docs",
+    "scripts",
+    "tests",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "LICENSE-docs",
+    "NOTICE",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-q"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+mypy_path = "src"
+packages = ["tersalang"]
+warn_unused_ignores = true
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.format]
+# The spec copies are exported documents; their code samples are not reformatted.
+exclude = ["**/*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "W", "D"]
+# D401: docstrings describe what a function returns or does ("The largest
+# power of two..."), not an imperative. D105/D107: the class docstring covers
+# dunder methods and __init__.
+ignore = ["E501", "D105", "D107", "D401"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["B011", "D"]

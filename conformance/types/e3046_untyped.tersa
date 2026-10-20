@@ -1,0 +1,13 @@
+# spec: reference 5.12 an interface with no type parameter cannot be implemented
+# expect: check-error E3046
+module e3046_untyped
+
+interface Solution
+  function add_one(n: Int) returns Int
+end
+
+function main() returns Unit
+do
+  let n = add_one(1)  # ERROR E3046: write a top-level add_one
+  return
+end

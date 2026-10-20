@@ -1,0 +1,21 @@
+# spec: design 7.3 do on its own line for while, for, and lambda
+# expect: check-ok
+module loops_ok
+
+function main() returns Int
+do
+  var n = 0
+  while n < 2
+  do
+    set n = n + 1
+  end
+  for x in [1, 2]
+  do
+    set n = n + x
+  end
+  let double = function (v: Int) returns Int
+    do
+      v * 2
+    end
+  return double(n)
+end

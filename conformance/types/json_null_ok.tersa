@@ -1,0 +1,27 @@
+# spec: design 15 std.json parses into the Json choice; its null is Null, also spelled Json.Null
+# allow: Console
+# expect: stdout
+# |null null other
+# |null
+module json_null_ok
+
+import std.console exposing print
+import std.json exposing stringify
+
+function kind(j: Json) returns Text
+do
+  match j
+    case Null then
+      return "null"
+    case _ then
+      return "other"
+  end
+end
+
+function main() returns Unit
+  uses Console
+do
+  print(Text.join([kind(Null), kind(Json.Null), kind(Json.Bool(true))], " "))
+  print(stringify(Null))
+  return
+end

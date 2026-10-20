@@ -1,0 +1,9 @@
+# spec: design 23 RH-07 traps cannot be caught
+# expect: trap T6002
+module rh07_trap
+
+function main() returns Unit
+do
+  let _ = 1 div 0
+  return
+end

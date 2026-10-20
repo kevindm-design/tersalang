@@ -1,0 +1,9 @@
+# spec: language reference 7.1
+# expect: check-warn W3001
+module w3001_option
+
+function main() returns Unit
+do
+  Int.parse("1")
+  return
+end

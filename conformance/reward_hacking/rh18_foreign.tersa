@@ -1,0 +1,12 @@
+# spec: design 23 RH-18 foreign is rejected in RL mode
+# expect: check-error E4012
+# mode: rl
+module rh18_foreign
+
+foreign "python:os.getcwd" function poke() returns Text
+  uses Python
+
+function main() returns Unit
+do
+  return
+end

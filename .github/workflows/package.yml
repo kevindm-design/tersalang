@@ -1,0 +1,61 @@
+name: package
+
+# Called by ci.yml on every pull request and by release.yml before publishing,
+# so a release uploads exactly what CI checked.
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build sdist and wheel
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Install build tools
+        run: python -m pip install build==1.6.1 twine==7.0.0
+      - name: Build
+        # Builds the sdist, then the wheel from the unpacked sdist, so a file
+        # missing from the sdist breaks the wheel build here.
+        run: python -m build
+      - name: twine check
+        run: python -m twine check --strict dist/*
+      - name: Tag matches version
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="tersalang-${GITHUB_REF_NAME#v}-py3-none-any.whl"
+          ls dist
+          test -f "dist/$expected" || { echo "tag $GITHUB_REF_NAME does not match the built wheel"; exit 1; }
+      - name: Smoke-test the wheel
+        # Runs from outside the checkout, so nothing can fall back to spec/.
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv "$RUNNER_TEMP/wheel"
+          "$RUNNER_TEMP/wheel/bin/pip" install dist/*.whl
+          tersa="$RUNNER_TEMP/wheel/bin/tersa"
+          repo="$PWD"
+          cd "$RUNNER_TEMP"
+          "$tersa" version
+          "$tersa" grammar --format lark | cmp - "$repo/spec/tersa.lark"
+          "$tersa" grammar --format ebnf | cmp - "$repo/spec/tersa.ebnf"
+          "$tersa" grammar --format gbnf | cmp - "$repo/spec/tersa.gbnf"
+          "$tersa" run --allow Console "$repo/examples/hello.tersa"
+          "$tersa" harness validate "$repo/examples/tasks/add_one"
+      - name: Upload dist
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error

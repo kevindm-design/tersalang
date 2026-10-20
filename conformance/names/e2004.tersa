@@ -1,0 +1,7 @@
+# spec: design 13.2 qualifier clash
+# expect: check-error E2004
+# fixed: import std.console as math => import std.console as console
+module e2004
+
+import std.console as math
+import std.math

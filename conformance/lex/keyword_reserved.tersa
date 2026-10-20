@@ -1,0 +1,9 @@
+# spec: design 6.6 keywords are reserved, so this is a syntax error
+# expect: check-error E1000
+module keyword_reserved
+
+function main() returns Unit
+do
+  let do = 1
+  return
+end

@@ -1,0 +1,10 @@
+# spec: design 6.2 a leading operator does not continue the previous line
+# expect: check-error E1000
+module nl_not_suppressed
+
+function main() returns Int
+do
+  let x = 1
+    + 2
+  return x
+end

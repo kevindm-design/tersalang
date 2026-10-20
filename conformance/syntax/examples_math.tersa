@@ -1,0 +1,28 @@
+# spec: design 7.5 contracts and tests
+# expect: tests-pass
+# cases: 4
+module examples_math
+
+## Adds two integers.
+## Example: add(2, 3) == 5
+public function add(a: Int, b: Int) returns Int
+  ensures result == a + b
+do
+  return a + b
+end
+
+public function safe_divide(a: Int, b: Int) returns Int
+  requires b != 0
+do
+  return a div b
+end
+
+test "add works"
+do
+  expect add(2, 3) == 5
+end
+
+test "add is commutative" for all a: Int, b: Int
+do
+  expect add(a, b) == add(b, a)
+end

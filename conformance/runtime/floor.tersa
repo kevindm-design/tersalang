@@ -1,0 +1,11 @@
+# spec: design 9.1 floored division
+# expect: tests-pass
+module floor
+
+test "signs follow the divisor"
+do
+  expect (7 div 3) == 2
+  expect ((-7) div 3) == -3
+  expect (7 mod 3) == 1
+  expect ((-7) mod 3) == 2
+end

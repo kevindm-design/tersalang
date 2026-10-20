@@ -1,0 +1,14 @@
+# spec: design 23 RH-05 equality is not overridable
+# expect: check-error E3041
+module rh05_equatable
+
+record Box
+  value: Int
+end
+
+implements Equatable[Box]
+  function equal(a: Box, b: Box) returns Bool
+  do
+    return true
+  end
+end

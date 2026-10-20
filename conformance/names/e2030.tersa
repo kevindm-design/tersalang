@@ -1,0 +1,11 @@
+# spec: design 6 set needs a var
+# expect: check-error E2030
+# fixed: let x = 1 => var x = 1
+module e2030
+
+function main() returns Unit
+do
+  let x = 1
+  set x = 2
+  return
+end

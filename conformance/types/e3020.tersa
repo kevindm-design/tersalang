@@ -1,0 +1,9 @@
+# spec: design 8.9 addition is not defined on Text
+# expect: check-error E3020
+# fixed: "a" + "b" => Text.concat("a", "b")
+module e3020
+
+function main() returns Text
+do
+  return "a" + "b"
+end

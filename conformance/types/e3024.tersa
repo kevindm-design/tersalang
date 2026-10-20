@@ -1,0 +1,9 @@
+# spec: design 9.1a E3024
+# expect: check-error E3024
+# fixed: 1 + Int64.max => 1 + Int64.to_int(Int64.max)
+module e3024
+
+function main() returns Int
+do
+  return 1 + Int64.max
+end

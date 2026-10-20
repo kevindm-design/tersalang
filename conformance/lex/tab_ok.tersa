@@ -1,0 +1,10 @@
+# spec: design 6.1 tabs are allowed in text and comments
+# expect: check-ok
+# a	tab in a comment
+module tab_ok
+
+function main() returns Unit
+do
+  let cell: Text = "a\tb"
+  return
+end

@@ -1,0 +1,10 @@
+# spec: design 6.5 E0010
+# expect: check-error E0010
+# fixed: let bad_name_ = 1 => let bad_name = 1
+module ident_lower
+
+function main() returns Unit
+do
+  let bad_name_ = 1
+  return
+end

@@ -1,0 +1,22 @@
+# spec: reference 5.11 a type argument must satisfy the parameter's constraints
+# expect: check-error E3046
+# fixed: Box(value = 1), Box(value = 2))  # ERROR E3046: no Comparable[Box] => 1, 2)
+module e3046
+
+record Box
+  value: Int
+end
+
+function smallest[T: Comparable](a: T, b: T) returns T
+do
+  if compare(a, b) == Greater then
+    return b
+  end
+  return a
+end
+
+function main() returns Unit
+do
+  let box = smallest(Box(value = 1), Box(value = 2))  # ERROR E3046: no Comparable[Box]
+  return
+end

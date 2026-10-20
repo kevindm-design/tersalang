@@ -1,0 +1,10 @@
+# spec: language reference resolved item 1
+# expect: check-error E1000
+module same_line_using
+
+function main() returns Unit
+do
+  using f = 1 do
+    return
+  end
+end

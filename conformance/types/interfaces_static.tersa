@@ -1,0 +1,29 @@
+# spec: reference 5.12 an interface call can resolve from the expected type
+# allow: Console
+# expect: stdout
+# |0
+module interfaces_static
+
+import std.console exposing print
+
+record Rect
+  width: Int
+end
+
+interface Default[T]
+  function default() returns T
+end
+
+implements Default[Rect]
+  function default() returns Rect
+  do
+    return Rect(width = 0)
+  end
+end
+
+function main() returns Unit
+  uses Console
+do
+  let r: Rect = default()
+  print(show(r.width))
+end

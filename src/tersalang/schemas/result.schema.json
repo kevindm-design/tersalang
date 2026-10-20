@@ -1,0 +1,166 @@
+{
+  "$id": "tersa.result/0.9",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tersalang harness episode",
+  "description": "Scored attempt. reward = (1 - w) * C + w * C * E. E is min(1, max(ref_fuel, 1) / max(fuel_used, 1)) when E_basis is reference or declared, and max(0, 1 - fuel_used / fuel) when E_basis is limit. A candidate OS memory kill, OS CPU kill, or wall-clock stop scores reward 0 with C 0 and E 0. An unclassified child crash, including a child result that fails this schema, does the same and lists every hidden test as failed. isolation is the backend that actually ran. attempt_diagnostics counts the leading diagnostics that come from the attempt's own parse and check; the rest were raised while checking the attempt against the hidden tests or running them. The agent view omits tests.cases and stdout, reduces every diagnostic after the first attempt_diagnostics to its code, a position in the attempt, and a generic message, and rounds resources.fuel_used, resources.memory_units_used, and breakdown.ref_fuel down to a power of two, with E and reward recomputed from the rounded numbers, so its E and reward are approximate. Design Doc §22.3 and §22.5.",
+  "type": "object",
+  "required": [
+    "schema",
+    "task_id",
+    "attempt_id",
+    "toolchain",
+    "stage_reached",
+    "diagnostics",
+    "attempt_diagnostics",
+    "tests",
+    "visible_tests",
+    "contracts",
+    "resources",
+    "breakdown",
+    "reward",
+    "infrastructure_error",
+    "isolation",
+    "isolation_warning",
+    "replay",
+    "crash"
+  ],
+  "properties": {
+    "schema": {"const": "tersa.result/0.9"},
+    "task_id": {"type": "string"},
+    "attempt_id": {"type": "string"},
+    "toolchain": {
+      "type": "object",
+      "required": ["tersalang", "language", "python", "platform"],
+      "properties": {
+        "tersalang": {"type": "string"},
+        "language": {"type": "string"},
+        "python": {"type": "string"},
+        "platform": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "stage_reached": {"enum": ["parse", "check", "run"]},
+    "diagnostics": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
+    "attempt_diagnostics": {"type": "integer", "minimum": 0},
+    "tests": {
+      "type": "object",
+      "required": ["total", "passed", "failed", "trapped"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "passed": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0},
+        "trapped": {"type": "integer", "minimum": 0},
+        "cases": {"type": "array", "items": {"$ref": "#/$defs/case"}}
+      },
+      "additionalProperties": false
+    },
+    "visible_tests": {
+      "type": "object",
+      "required": ["total", "passed"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "passed": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "contracts": {
+      "type": "object",
+      "required": ["task_spec_violations"],
+      "properties": {"task_spec_violations": {"type": "integer", "minimum": 0}},
+      "additionalProperties": false
+    },
+    "resources": {
+      "type": "object",
+      "required": ["fuel_used", "fuel_limit", "memory_units_used", "memory_units_limit", "limit_hit"],
+      "properties": {
+        "fuel_used": {"type": "integer", "minimum": 0},
+        "fuel_limit": {"type": "integer", "minimum": 0},
+        "memory_units_used": {"type": "integer", "minimum": 0},
+        "memory_units_limit": {"type": "integer", "minimum": 0},
+        "limit_hit": {"enum": ["fuel", "memory", "depth", "int", null]}
+      },
+      "additionalProperties": false
+    },
+    "breakdown": {
+      "type": "object",
+      "required": ["C", "E", "E_basis", "E_basis_reason", "ref_fuel", "w"],
+      "properties": {
+        "C": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "E": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "E_basis": {"enum": ["reference", "declared", "limit", null]},
+        "E_basis_reason": {
+          "enum": ["no_reference", "reference_did_not_execute", "reference_failed_hidden_tests", null]
+        },
+        "ref_fuel": {"type": ["integer", "null"], "minimum": 0},
+        "w": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+      },
+      "additionalProperties": false
+    },
+    "reward": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "infrastructure_error": {
+      "type": ["object", "null"],
+      "required": ["code", "message"],
+      "properties": {
+        "code": {"type": "string", "pattern": "^I[0-9]{4}$"},
+        "message": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "isolation": {"enum": ["none", "rlimit", "bwrap", "nsjail", "gvisor"]},
+    "isolation_warning": {"type": ["string", "null"]},
+    "stdout": {"type": "string"},
+    "replay": {
+      "type": "object",
+      "required": ["seed", "source_hash", "task_hash"],
+      "properties": {
+        "seed": {"type": "integer"},
+        "source_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "task_hash": {"type": "string", "pattern": "^(sha256:[0-9a-f]{64})?$"}
+      },
+      "additionalProperties": false
+    },
+    "crash": {
+      "type": ["object", "null"],
+      "required": ["type", "message"],
+      "properties": {
+        "type": {"enum": ["process", "invalid_result"]},
+        "message": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "case": {
+      "type": "object",
+      "required": ["id", "status", "fuel"],
+      "properties": {
+        "id": {"type": "string"},
+        "status": {"enum": ["passed", "failed", "trapped"]},
+        "fuel": {"type": "integer", "minimum": 0},
+        "trap": {"type": "string"},
+        "blame": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": ["schema", "code", "severity", "category", "message", "file", "span", "related", "blame", "values", "fix", "docs_url"],
+      "properties": {
+        "schema": {"const": "tersa.diagnostic/0.1"},
+        "code": {"type": "string"},
+        "severity": {"enum": ["error", "warning", "info"]},
+        "category": {"type": "string"},
+        "message": {"type": "string"},
+        "file": {"type": "string"},
+        "span": {"type": "object"},
+        "related": {"type": "array"},
+        "blame": {"type": ["string", "null"]},
+        "values": {"type": ["object", "null"]},
+        "fix": {"type": ["object", "null"]},
+        "docs_url": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

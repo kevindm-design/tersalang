@@ -1,0 +1,14 @@
+# spec: reference 5.12 an interface with no type parameter has no implements block
+# expect: check-error E3007
+module e3007_implements
+
+interface Solution
+  function solve(n: Int) returns Int
+end
+
+implements Solution[Int]  # ERROR E3007: Solution takes no type parameter
+  function solve(n: Int) returns Int
+  do
+    return n
+  end
+end

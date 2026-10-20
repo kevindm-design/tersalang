@@ -1,0 +1,14 @@
+# spec: language reference resolved item 3
+# expect: check-error E2021
+# fixed: end\n\nfunction f() => end\n\nfunction g()
+module e2021
+
+function f() returns Unit
+do
+  return
+end
+
+function f() returns Unit
+do
+  return
+end

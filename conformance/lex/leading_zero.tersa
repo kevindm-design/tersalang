@@ -1,0 +1,10 @@
+# spec: design 6.7 E0021
+# expect: check-error E0021
+# fixed: let n = 01 => let n = 1
+module leading_zero
+
+function main() returns Unit
+do
+  let n = 01
+  return
+end

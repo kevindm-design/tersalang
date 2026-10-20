@@ -1,0 +1,14 @@
+# spec: design 8.4 records use named fields
+# expect: check-error E3080
+# fixed: Box(1) => Box(value = 1)
+module e3080
+
+record Box
+  value: Int
+end
+
+function main() returns Unit
+do
+  let _ = Box(1)
+  return
+end

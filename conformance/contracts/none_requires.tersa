@@ -1,0 +1,15 @@
+# spec: design 8.2 a requires that compares with None checks, and traps at the call
+# expect: trap T6101
+module none_requires
+
+function first(xs: List[Int]) returns Int
+  requires xs.get(0) != None
+do
+  return xs.get(0).unwrap_or(0)
+end
+
+function main() returns Unit
+do
+  let _ = first([])
+  return
+end

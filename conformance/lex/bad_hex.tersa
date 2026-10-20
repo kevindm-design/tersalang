@@ -1,0 +1,10 @@
+# spec: design 6.7 E0025
+# expect: check-error E0025
+# fixed: let n = 0x => let n = 0x1F
+module bad_hex
+
+function main() returns Unit
+do
+  let n = 0x
+  return
+end

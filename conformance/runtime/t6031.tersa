@@ -1,0 +1,9 @@
+# spec: design 14 failed expect
+# expect: test-fail T6031
+# fixed: expect false => expect true
+module t6031
+
+test "fails"
+do
+  expect false
+end

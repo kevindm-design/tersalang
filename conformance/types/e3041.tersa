@@ -1,0 +1,16 @@
+# spec: design 8.6 derived interfaces
+# expect: check-error E3041
+# fixed: implements Equatable[Box]\n  function equal(a: Box, b: Box) returns Bool\n =>
+# fixed:   do\n    return true\n  end\nend\n =>
+module e3041
+
+record Box
+  value: Int
+end
+
+implements Equatable[Box]
+  function equal(a: Box, b: Box) returns Bool
+  do
+    return true
+  end
+end

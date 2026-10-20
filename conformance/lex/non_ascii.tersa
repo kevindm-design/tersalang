@@ -1,0 +1,10 @@
+# spec: design 6.1 E0002
+# expect: check-error E0002
+# fixed: let café = 1 => let cafe = 1
+module non_ascii
+
+function main() returns Unit
+do
+  let café = 1
+  return
+end

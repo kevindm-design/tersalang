@@ -1,0 +1,9 @@
+# spec: design 8.8 missing return
+# expect: check-error E3032
+# fixed:   let x = 1\nend =>   let x = 1\n  return x\nend
+module e3032
+
+function main() returns Int
+do
+  let x = 1
+end

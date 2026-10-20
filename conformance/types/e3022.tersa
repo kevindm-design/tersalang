@@ -1,0 +1,12 @@
+# spec: design 8 conditions are Bool
+# expect: check-error E3022
+# fixed: if 1 then => if 1 > 0 then
+module e3022
+
+function main() returns Unit
+do
+  if 1 then
+    return
+  end
+  return
+end

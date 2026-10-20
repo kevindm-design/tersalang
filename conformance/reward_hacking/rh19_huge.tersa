@@ -1,0 +1,11 @@
+# spec: design 23 RH-19 huge integers trap before they run
+# expect: trap T6204
+module rh19_huge
+
+import std.math exposing pow
+
+function main() returns Unit
+do
+  let _ = pow(2, 10000000)
+  return
+end

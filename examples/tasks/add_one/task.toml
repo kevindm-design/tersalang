@@ -1,0 +1,21 @@
+id = "add_one"
+language = "0.1"
+effects = []
+
+[limits]
+fuel = 100000
+memory_units = 100000
+max_int_bits = 65536
+call_depth = 1000
+output_bytes = 1048576
+wall_ms = 5000
+cases = 4
+
+[reward]
+check_credit = 0.0
+efficiency_weight = 0.1
+reference_fuel = 88
+
+[seeds]
+property_seed_policy = "per_episode"
+fixed_seed = 0

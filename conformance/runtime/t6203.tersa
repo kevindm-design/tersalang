@@ -1,0 +1,16 @@
+# spec: design 12.6 call depth
+# expect: trap T6203
+# fixed: return down(n) => if n <= 0 then\n    return 0\n  end\n  return down(n - 1)
+# depth: 4
+module t6203
+
+function down(n: Int) returns Int
+do
+  return down(n)
+end
+
+function main() returns Unit
+do
+  let _ = down(1)
+  return
+end

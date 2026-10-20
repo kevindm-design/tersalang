@@ -1,0 +1,10 @@
+# spec: design 8.2 inference boundary
+# expect: check-error E3010
+# fixed: let x = None => let x: Option[Int] = None
+module e3010
+
+function main() returns Unit
+do
+  let x = None
+  return
+end

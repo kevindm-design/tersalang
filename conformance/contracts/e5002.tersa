@@ -1,0 +1,12 @@
+# spec: design 10.3 contracts cannot perform effects
+# expect: check-error E5002
+# fixed: requires print("x") => requires true
+module e5002
+
+import std.console exposing print
+
+function f() returns Bool
+  requires print("x")
+do
+  return true
+end

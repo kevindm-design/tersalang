@@ -1,0 +1,9 @@
+# spec: design 14.2 generators
+# expect: check-error E3013
+# fixed: for all f: function(Int) returns Int => for all n: Int
+module e3013
+
+test "no function generator" for all f: function(Int) returns Int
+do
+  expect true
+end

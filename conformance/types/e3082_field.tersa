@@ -1,0 +1,13 @@
+# spec: language reference 5.9 record field
+# expect: check-error E3082
+module e3082_field
+
+record Box
+  value: Int
+end
+
+function main() returns Int
+do
+  let box = Box(value = 1)
+  return box.missing
+end

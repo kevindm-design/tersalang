@@ -1,0 +1,13 @@
+# spec: design 9.3 Float.from_int overflow
+# expect: trap T6003
+# fixed: math.pow(2, 20000) => math.pow(2, 20)
+module t6003
+
+import std.math
+
+function main() returns Unit
+do
+  let n = math.pow(2, 20000)
+  let _ = Float.from_int(n)
+  return
+end

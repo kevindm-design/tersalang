@@ -1,0 +1,9 @@
+# spec: design 7.3 break outside a loop
+# expect: check-error E2010
+# fixed:   break\n =>   return\n
+module e2010
+
+function main() returns Unit
+do
+  break
+end

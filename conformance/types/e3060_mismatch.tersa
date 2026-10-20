@@ -1,0 +1,14 @@
+# spec: language reference 10.2 try error type
+# expect: check-error E3060
+module e3060_mismatch
+
+function load() returns Result[Int, Text]
+do
+  return Error("missing")
+end
+
+function main() returns Result[Int, Int]
+do
+  let n = try load()
+  return Ok(n)
+end

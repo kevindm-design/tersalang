@@ -1,0 +1,9 @@
+# fmt: skip
+# spec: design 6.2 CRLF line endings
+# expect: check-ok
+module crlf_ok
+
+function main() returns Unit
+do
+  return
+end

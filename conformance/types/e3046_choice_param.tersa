@@ -1,0 +1,17 @@
+# spec: reference 5.11 a choice's type arguments must meet its constraints
+# expect: check-error E3046
+module e3046_choice_param
+
+choice Ranked[T: Comparable]
+  case Unranked
+  case Best(item: T)
+end
+
+record Point
+  x: Int
+end
+
+function first() returns Ranked[Point]  # ERROR E3046: Point does not implement Comparable
+do
+  return Unranked
+end

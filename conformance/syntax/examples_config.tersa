@@ -1,0 +1,31 @@
+# spec: design 7.5 choices, match, effects, and using
+# expect: check-ok
+module examples_config
+
+choice ConfigError
+  case Missing(path: Text)
+  case BadLine(line: Int)
+end
+
+public function load_port(path: Text) returns Result[Int, ConfigError]
+  uses FileRead
+do
+  using f = try File.open(path).map_error(function (e: FileError) returns ConfigError
+    do
+      Missing(path)
+    end)
+  do
+    let first = f.read_line()
+    match first
+      case Some(line) then
+        match Int.parse(line)
+          case Some(n) if n > 0 then
+            return Ok(n)
+          case _ then
+            return Error(BadLine(1))
+        end
+      case None then
+        return Error(BadLine(1))
+    end
+  end
+end

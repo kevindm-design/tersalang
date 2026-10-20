@@ -1,0 +1,10 @@
+# spec: design 9.1a Int64 overflow
+# expect: trap T6001
+# fixed: Int64.max + Int64.max => Int64.max - Int64.max
+module t6001
+
+function main() returns Unit
+do
+  let _ = Int64.max + Int64.max
+  return
+end

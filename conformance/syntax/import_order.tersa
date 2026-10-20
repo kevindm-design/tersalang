@@ -1,0 +1,15 @@
+# spec: language reference resolved item 3
+# expect: check-ok
+module import_order
+
+import std.math
+
+function ready() returns Int
+do
+  return 1
+end
+
+function main() returns Int
+do
+  return math.abs(ready())
+end

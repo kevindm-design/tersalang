@@ -1,0 +1,10 @@
+# spec: design 9.8 show of a mutable value
+# expect: check-error E3045
+module t6021
+
+function main() returns Unit
+do
+  let xs: MutableList[Int] = MutableList.new()
+  let _ = show(xs)
+  return
+end

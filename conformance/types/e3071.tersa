@@ -1,0 +1,14 @@
+# spec: design 11 a lambda cannot capture a var
+# expect: check-error E3071
+# fixed: var n = 1 => let n = 1
+module e3071
+
+function main() returns Unit
+do
+  var n = 1
+  let _ = function () returns Int
+    do
+      n
+    end
+  return
+end

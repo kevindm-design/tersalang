@@ -1,0 +1,156 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (${{ matrix.os }} / ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Free GitHub-hosted runners. Pull requests run the same three operating
+        # systems as main so this PR can show the determinism bytes match.
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.12", "3.13", "3.14"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Setup uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
+      - name: Sync
+        run: uv sync --frozen
+      - name: Lint
+        run: uv run ruff check
+      - name: Python format
+        run: uv run ruff format --check
+      - name: Type-check
+        run: uv run mypy
+      - name: Install bubblewrap
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update && sudo apt-get install -y bubblewrap
+          # Ubuntu's AppArmor policy blocks bubblewrap's network namespace
+          # (loopback setup returns EPERM). This job is a disposable free
+          # runner; the sysctl does not leave the machine.
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0 || true
+      - name: Test
+        run: uv run pytest
+      - name: Format check
+        # `tersa fmt conformance` exits 3: that tree contains fixtures that
+        # are supposed to fail lexing or parsing, and the directory command
+        # reports each of them. The script checks the files that do parse.
+        run: uv run python scripts/check_fmt.py
+      - name: GBNF is generated
+        run: uv run python scripts/check_gbnf.py
+      - name: Developer Certificate of Origin
+        if: runner.os == 'Linux' && matrix.python-version == '3.12'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          missing=0
+          # pull_request builds HEAD as an unsigned merge of the branch into the base.
+          while read -r commit; do
+            [ -z "$commit" ] && continue
+            if ! git log -1 --format=%B "$commit" | grep -q '^Signed-off-by: '; then
+              echo "missing Signed-off-by on $commit"
+              missing=1
+            fi
+          done < <(git rev-list --no-merges origin/main..HEAD)
+          exit "$missing"
+
+  package:
+    uses: ./.github/workflows/package.yml
+
+  gbnf-llama:
+    name: gbnf (llama.cpp)
+    runs-on: ubuntu-latest
+    # Builds an external project from source. An upstream build break must
+    # not block a pull request, so this job reports but never gates.
+    continue-on-error: true
+    timeout-minutes: 30
+    env:
+      LLAMA_CPP_COMMIT: 31288c9c66e59377f7788d920678a565bb89dd37
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Setup uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
+      - name: Sync
+        run: uv sync --frozen
+      - name: Build llama.cpp test-gbnf-validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init -q "$RUNNER_TEMP/llama.cpp"
+          cd "$RUNNER_TEMP/llama.cpp"
+          git fetch -q --depth 1 https://github.com/ggml-org/llama.cpp "$LLAMA_CPP_COMMIT"
+          git checkout -q FETCH_HEAD
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=OFF -DLLAMA_CURL=OFF \
+            -DLLAMA_BUILD_TESTS=ON -DLLAMA_BUILD_SERVER=OFF
+          cmake --build build --target test-gbnf-validator -j 4
+      - name: Check both profiles in llama.cpp
+        run: uv run python scripts/check_gbnf_llama.py "$RUNNER_TEMP/llama.cpp/build/bin/test-gbnf-validator"
+
+  determinism:
+    name: determinism (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Setup uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
+      - name: Sync
+        run: uv sync --frozen
+      - name: Dump determinism bytes
+        run: uv run python scripts/determinism_dump.py determinism.bin
+      - name: Upload determinism bytes
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: determinism-${{ runner.os }}
+          path: determinism.bin
+          if-no-files-found: error
+
+  determinism-compare:
+    name: determinism (compare)
+    needs: determinism
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download determinism bytes
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          pattern: determinism-*
+          path: artifacts
+      - name: Compare bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmp artifacts/determinism-Linux/determinism.bin artifacts/determinism-macOS/determinism.bin
+          cmp artifacts/determinism-Linux/determinism.bin artifacts/determinism-Windows/determinism.bin

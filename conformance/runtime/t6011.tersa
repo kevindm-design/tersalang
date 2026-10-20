@@ -1,0 +1,11 @@
+# spec: design 9.6 index trap
+# expect: trap T6011
+# fixed: xs.at(2) => xs.get(2)
+module t6011
+
+function main() returns Unit
+do
+  let xs = [1]
+  let _ = xs.at(2)
+  return
+end

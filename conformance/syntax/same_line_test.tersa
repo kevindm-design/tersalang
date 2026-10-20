@@ -1,0 +1,7 @@
+# spec: language reference resolved item 1
+# expect: check-error E1000
+module same_line_test
+
+test "same line" do
+  expect true
+end

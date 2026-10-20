@@ -1,0 +1,12 @@
+# spec: design 12.3 path outside the grant
+# expect: trap T6301
+# no-fix: the fix is a path inside the grant, and that file must exist.
+# allow: FileRead=.
+module t6301
+
+function main() returns Result[Unit, FileError]
+  uses FileRead
+do
+  let _ = try File.read_text("../outside-the-grant")
+  return Ok(Unit)
+end

@@ -1,0 +1,8 @@
+# spec: language reference appendix C
+# expect: check-error E1000
+# fixed: do return => do\n  return
+module do_with_body
+
+function main() returns Unit
+do return
+end

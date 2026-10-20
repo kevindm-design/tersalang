@@ -1,0 +1,30 @@
+# spec: design 8.9 T-Add-Int, T-Try-Result, T-Call, inference, generics, exhaustiveness
+# expect: check-ok
+module section8_ok
+
+function add(a: Int, b: Int) returns Int
+do
+  return a + b
+end
+
+function first[T](xs: List[T]) returns Option[T]
+do
+  return xs.get(0)
+end
+
+function unwrap_ok(value: Result[Int, Text]) returns Result[Int, Text]
+do
+  let n = try value
+  return Ok(n)
+end
+
+function main() returns Int
+do
+  let n = add(2, 3)
+  match true
+    case true then
+      return n
+    case false then
+      return 0
+  end
+end

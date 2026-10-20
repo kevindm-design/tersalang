@@ -1,0 +1,13 @@
+# spec: design 8.6 orphan rule
+# expect: check-error E3040
+# fixed: module e3040\n => module e3040\n\nrecord Score\n  value: Int\nend\n
+# fixed: Comparable[Int] => Comparable[Score]
+# fixed: compare(a: Int, b: Int) => compare(a: Score, b: Score)
+module e3040
+
+implements Comparable[Int]
+  function compare(a: Int, b: Int) returns Ordering
+  do
+    return Equal
+  end
+end

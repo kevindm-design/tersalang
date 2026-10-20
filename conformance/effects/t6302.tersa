@@ -1,0 +1,11 @@
+# spec: design 12.3 ungranted effect reached from a test
+# expect: test-fail T6302
+# no-fix: the fix is the grant, `tersa test --allow Console`.
+module t6302
+
+import std.console exposing print
+
+test "prints"
+do
+  print("hi")
+end

@@ -1,0 +1,9 @@
+# spec: language reference 8.4 return type
+# expect: check-error E3033
+# fixed: return true => return 1
+module e3033
+
+function main() returns Int
+do
+  return true
+end

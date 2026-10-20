@@ -1,0 +1,8 @@
+# spec: design 6.2 LF line endings
+# expect: check-ok
+module lf_ok
+
+function main() returns Unit
+do
+  return
+end

@@ -1,0 +1,16 @@
+# spec: design 8.8 unreachable arm
+# expect: check-warn W3031
+# fixed:     case true then\n      return 2\n =>
+module w3031
+
+function main() returns Int
+do
+  match true
+    case true then
+      return 1
+    case true then
+      return 2
+    case false then
+      return 0
+  end
+end

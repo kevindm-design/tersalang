@@ -1,0 +1,13 @@
+# spec: language reference 13.2
+# expect: check-error E2005
+# fixed: import std.math exposing nope => import std.math
+# fixed: math.also_missing(1) => math.abs(1)
+module e2005
+
+import std.math exposing nope
+
+function main() returns Unit
+do
+  let _ = math.also_missing(1)
+  return
+end

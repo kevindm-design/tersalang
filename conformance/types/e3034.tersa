@@ -1,0 +1,9 @@
+# spec: design 8.4 main's return type
+# expect: run-error E3034
+# fixed: returns Int\ndo\n  return 1 => returns Unit\ndo\n  return
+module e3034
+
+function main() returns Int
+do
+  return 1
+end

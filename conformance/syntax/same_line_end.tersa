@@ -1,0 +1,7 @@
+# spec: language reference appendix A block
+# expect: check-error E1000
+module same_line_end
+
+function main() returns Unit
+do
+  return end

@@ -1,0 +1,10 @@
+# spec: design 8.6 Float is not a map key
+# expect: check-error E3042
+# fixed: {1.0: 1} => {1: 1}
+module e3042
+
+function main() returns Unit
+do
+  let _ = {1.0: 1}
+  return
+end

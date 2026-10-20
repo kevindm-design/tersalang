@@ -1,0 +1,7 @@
+# spec: design 16 foreign requires host mode
+# expect: check-error E4012
+# no-fix: the fix is `mode = "host"` in the package manifest.
+module e4012
+
+foreign "python" function ping() returns Unit
+  uses Python

@@ -1,0 +1,11 @@
+# spec: language reference appendix A block
+# expect: check-error E1000
+module same_line_else
+
+function pick(flag: Bool) returns Int
+do
+  if flag then
+    return 1 else
+    return 2
+  end
+end

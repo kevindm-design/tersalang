@@ -1,0 +1,15 @@
+# spec: design 12.5 fuel
+# expect: trap T6201
+# no-fix: the program is correct; the run grants 1 unit of fuel, and the fix is a larger budget.
+# fuel: 1
+module t6201
+
+function main() returns Unit
+do
+  var n = 0
+  while n < 5
+  do
+    set n = n + 1
+  end
+  return
+end

@@ -1,0 +1,9 @@
+# spec: language reference appendix C
+# expect: trap T6013
+module t6013_list
+
+function main() returns Unit
+do
+  let _ = Bytes.of_list([10, 300])
+  return
+end

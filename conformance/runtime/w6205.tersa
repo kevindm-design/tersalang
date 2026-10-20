@@ -1,0 +1,15 @@
+# spec: design 12.6 output cap
+# expect: run-note W6205
+# no-fix: the program is correct; the run allows 0 output bytes, and the fix is a larger cap.
+# allow: Console
+# output-bytes: 0
+module w6205
+
+import std.console exposing print
+
+function main() returns Unit
+  uses Console
+do
+  print("hello")
+  return
+end

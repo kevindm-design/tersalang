@@ -1,0 +1,10 @@
+# spec: design 6.7 E0027
+# expect: check-error E0027
+# fixed: "\\q" => "\\t"
+module bad_escape
+
+function main() returns Unit
+do
+  let t: Text = "\q"
+  return
+end

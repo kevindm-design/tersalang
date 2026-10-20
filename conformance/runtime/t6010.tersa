@@ -1,0 +1,10 @@
+# spec: design 9.4 slice bounds
+# expect: trap T6010
+# fixed: slice(0, 4) => slice(0, 2)
+module t6010
+
+function main() returns Unit
+do
+  let _ = "ab".slice(0, 4)
+  return
+end

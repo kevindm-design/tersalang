@@ -1,0 +1,11 @@
+# spec: design 12.5 memory
+# expect: trap T6202
+# no-fix: the program is correct; the run grants 1 memory unit, and the fix is a larger budget.
+# memory: 1
+module t6202
+
+function main() returns Unit
+do
+  let _ = [1, 2, 3, 4, 5]
+  return
+end

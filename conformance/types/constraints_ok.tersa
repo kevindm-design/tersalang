@@ -1,0 +1,32 @@
+# spec: reference 5.11 a constrained type parameter may use what its constraints provide
+# allow: Console
+# expect: stdout
+# |[1, 2]
+# |true
+# |{"a": 1}
+module constraints_ok
+
+import std.console exposing print
+
+function render[T: Showable](value: T) returns Text
+do
+  return show(value)
+end
+
+function same[T: Equatable](a: T, b: T) returns Bool
+do
+  return a == b
+end
+
+function single[K: Hashable](key: K) returns Map[K, Int]
+do
+  return {key: 1}
+end
+
+function main() returns Unit
+  uses Console
+do
+  print(render([1, 2]))
+  print(show(same("x", "x")))
+  print(show(single("a")))
+end

@@ -1,0 +1,25 @@
+# spec: reference 5.12 implementations inherit interface contracts (under the interface's names)
+# expect: trap T6102
+module t6102_inherited
+
+record Rect
+  width: Int
+end
+
+interface Sized[T]
+  function size(value: T) returns Int
+    ensures result >= value.width
+end
+
+implements Sized[Rect]
+  function size(r: Rect) returns Int
+  do
+    return r.width - 1
+  end
+end
+
+function main() returns Unit
+do
+  let n = size(Rect(width = 3))  # TRAP T6102: the inherited ensures fails
+  return
+end

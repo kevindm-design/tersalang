@@ -1,0 +1,8 @@
+# spec: design 6.7 E0026
+# expect: check-error E0026
+# fixed: "abc => "abc"\n  return\nend
+module unterminated
+
+function main() returns Unit
+do
+  let t: Text = "abc

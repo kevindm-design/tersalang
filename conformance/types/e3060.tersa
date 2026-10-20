@@ -1,0 +1,10 @@
+# spec: design 8.9 T-Try-Result failure
+# expect: check-error E3060
+# fixed: let _ = try 1 => let _ = 1
+module e3060
+
+function main() returns Unit
+do
+  let _ = try 1
+  return
+end

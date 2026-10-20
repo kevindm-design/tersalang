@@ -1,0 +1,11 @@
+# spec: design 10.3 old belongs in ensures
+# expect: check-error E5001
+# fixed: let _ = old(n) => let _ = n
+module e5001
+
+function main() returns Unit
+do
+  let n = 1
+  let _ = old(n)
+  return
+end

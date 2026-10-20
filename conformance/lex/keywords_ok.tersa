@@ -1,0 +1,13 @@
+# spec: design 6.6 keywords used as keywords
+# expect: check-ok
+module keywords_ok
+
+function main() returns Unit
+do
+  let flag = true and not false
+  if flag then
+    return
+  else
+    return
+  end
+end

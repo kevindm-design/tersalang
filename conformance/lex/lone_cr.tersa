@@ -1,0 +1,1 @@
+# spec: design 6.2 E0004# expect: check-error E0004# no-fix: end each line with LF or CRLF instead of a lone CR.module lone_crfunction main() returns Unitdo  returnend

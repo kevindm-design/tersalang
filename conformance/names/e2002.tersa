@@ -1,0 +1,11 @@
+# spec: language reference appendix C
+# expect: check-error E2002
+# fixed: import e2002\n\n =>
+module e2002
+
+import e2002
+
+function main() returns Unit
+do
+  return
+end

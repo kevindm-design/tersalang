@@ -1,0 +1,10 @@
+# fmt: skip
+# spec: design 7.4 W1103
+# expect: check-warn W1103
+# fixed: true and false or true => (true and false) or true
+module mixed_and_or
+
+function main() returns Bool
+do
+  return true and false or true
+end

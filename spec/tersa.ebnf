@@ -1,0 +1,101 @@
+(* Tersalang grammar, language 0.1.
+   Copied from Design Doc v0.5.2, section 7.2.
+   `let _` is accepted by the parser and recorded in docs/spec-notes.md.
+   It is not part of this normative grammar.
+*)
+
+(* ===== Files and modules ===== *)
+file            = { NL } , module_decl , { import_decl | NL } , { top_decl | NL } , EOF ;
+module_decl     = "module" , module_path , NL ;
+import_decl     = "import" , module_path , [ "as" , LOWER ] ,
+                  [ "exposing" , name , { "," , name } ] , NL ;
+module_path     = LOWER , { "." , LOWER } ;
+name            = LOWER | UPPER ;
+
+top_decl        = [ "public" ] , ( function_decl | record_decl | choice_decl
+                                 | interface_decl | const_decl | foreign_decl )
+                | implements_decl
+                | test_decl ;
+const_decl      = "let" , LOWER , ":" , type , "=" , expression , NL ;
+
+(* ===== Functions ===== *)
+function_decl   = header , "do" , NL , block , "end" , NL ;   (* header ends with NL, so "do" starts its own line; E1000 *)
+header          = "function" , LOWER , [ type_params ] , "(" , [ params ] , ")" ,
+                  "returns" , type , NL ,
+                  [ "uses" , UPPER , { "," , UPPER } , NL ] ,
+                  { contract } ;
+contract        = ( "requires" | "ensures" ) , expression , NL ;
+params          = param , { "," , param } , [ "," ] ;
+param           = LOWER , ":" , type ;
+type_params     = "[" , type_param , { "," , type_param } , "]" ;
+type_param      = UPPER , [ ":" , constraint , { "and" , constraint } ] ;
+constraint      = UPPER , [ type_args ] ;
+
+(* ===== Types ===== *)
+type            = [ module_path , "." ] , UPPER , [ type_args ]
+                | "function" , "(" , [ type , { "," , type } ] , ")" , "returns" , type ;
+type_args       = "[" , type , { "," , type } , "]" ;
+
+record_decl     = "record" , UPPER , [ type_params ] , NL ,
+                  { LOWER , ":" , type , NL } ,
+                  { "invariant" , expression , NL } ,
+                  "end" , NL ;
+choice_decl     = "choice" , UPPER , [ type_params ] , NL ,
+                  { "case" , UPPER , [ "(" , params , ")" ] , NL } ,
+                  "end" , NL ;
+interface_decl  = "interface" , UPPER , [ type_params ] , NL , { header } , "end" , NL ;
+implements_decl = "implements" , UPPER , type_args , NL , { function_decl } , "end" , NL ;
+foreign_decl    = "foreign" , TEXT , header ;        (* host-mode interop only, §16 *)
+test_decl       = "test" , TEXT , [ "for" , "all" , params ] , NL ,
+                  "do" , NL , block , "end" , NL ;
+
+(* ===== Statements ===== *)
+block           = { [ statement ] , NL } ;
+statement       = "let" , LOWER , [ ":" , type ] , "=" , expression
+                | "var" , LOWER , [ ":" , type ] , "=" , expression
+                | "set" , place , "=" , expression
+                | "return" , [ expression ]
+                | "fail" , expression
+                | "expect" , expression
+                | "break" | "continue"
+                | if_stmt | match_stmt | while_stmt | for_stmt | using_stmt
+                | expression ;                      (* checker: must be a call, §7.4 *)
+place           = LOWER , { "." , LOWER } ;
+if_stmt         = "if" , expression , "then" , block ,
+                  { "elseif" , expression , "then" , block } ,
+                  [ "else" , block ] , "end" ;
+match_stmt      = "match" , expression , NL ,
+                  { "case" , pattern , [ "if" , expression ] , "then" , block } , "end" ;
+while_stmt      = "while" , expression , NL , "do" , NL , block , "end" ;
+for_stmt        = "for" , LOWER , "in" , expression , NL , "do" , NL , block , "end" ;
+using_stmt      = "using" , LOWER , "=" , expression , NL , "do" , NL , block , "end" ;
+pattern         = "_" | LOWER | literal | "-" , ( INT | FLOAT )
+                | [ module_path , "." ] , UPPER , [ "(" , pattern , { "," , pattern } , ")" ] ;
+
+(* ===== Expressions (lowest to highest precedence; see 7.3) ===== *)
+expression      = lambda | or_expr ;
+lambda          = "function" , "(" , [ params ] , ")" , "returns" , type , NL ,
+                  "do" , NL , expression , NL , "end" ;
+                  (* single-expression body. "do" is alone on its line (E1000).
+                     Line ends inside a lambda produce NL even within brackets
+                     (the lambda-frame rule) *)
+or_expr         = and_expr , { "or" , and_expr } ;
+and_expr        = not_expr , { "and" , not_expr } ;
+not_expr        = "not" , not_expr | comparison ;
+comparison      = additive , [ comp_op , additive ] ;      (* non-associative *)
+comp_op         = "==" | "!=" | "<" | "<=" | ">" | ">=" ;
+additive        = multiplicative , { ( "+" | "-" ) , multiplicative } ;
+multiplicative  = prefix , { ( "*" | "/" | "div" | "mod" ) , prefix } ;
+prefix          = "-" , prefix | "try" , prefix | update ;
+update          = postfix , [ "with" , "(" , field_init , { "," , field_init } , [ "," ] , ")" ] ;
+postfix         = primary , { "(" , [ args ] , ")" | "." , name } ;
+args            = arg , { "," , arg } , [ "," ] ;
+arg             = [ NAMED_ARG ] , expression ;      (* NAMED_ARG = LOWER "=" , see 7.1 *)
+field_init      = LOWER , "=" , expression ;
+primary         = literal | LOWER | UPPER | "result"
+                | "old" , "(" , expression , ")"
+                | "(" , expression , ")"
+                | "[" , [ expression , { "," , expression } , [ "," ] ] , "]"
+                | "{" , [ entry , { "," , entry } , [ "," ] ] , "}" ;
+entry           = expression , ":" , expression ;
+literal         = INT | FLOAT | TEXT | "true" | "false" ;

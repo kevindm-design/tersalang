@@ -1,0 +1,11 @@
+# spec: design 22.1 an attempt's function must match the task interface
+# expect: harness-error E3047
+# interface: e3047_interface.tersa
+# fixed: returns Text => returns Int
+# fixed: show(n + 1) => n + 1
+module e3047
+
+function add_one(n: Int) returns Text
+do
+  return show(n + 1)
+end

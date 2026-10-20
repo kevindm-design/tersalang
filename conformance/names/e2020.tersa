@@ -1,0 +1,11 @@
+# spec: language reference resolved item 2
+# expect: check-error E2020
+# fixed: let x = 2 => let y = 2
+module e2020
+
+function main() returns Unit
+do
+  let x = 1
+  let x = 2
+  return
+end

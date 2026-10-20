@@ -1,0 +1,9 @@
+# spec: design 10 fail
+# expect: trap T6030
+# fixed: fail "stop" => return
+module t6030
+
+function main() returns Unit
+do
+  fail "stop"
+end

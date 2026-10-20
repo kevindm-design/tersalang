@@ -1,0 +1,10 @@
+# spec: design 8.4 named arguments are for records
+# expect: check-error E3081
+# fixed: Some(value = 1) => Some(1)
+module e3081
+
+function main() returns Unit
+do
+  let _ = Some(value = 1)
+  return
+end

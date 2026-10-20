@@ -1,0 +1,19 @@
+# spec: design 8.6 an implements block supplies every function the interface lists
+# expect: check-error E3044
+module e3044_user
+
+record Rect
+  width: Int
+end
+
+interface Sized[T]
+  function size(value: T) returns Int
+  function name(value: T) returns Text
+end
+
+implements Sized[Rect]  # ERROR E3044: missing name
+  function size(value: Rect) returns Int
+  do
+    return value.width
+  end
+end

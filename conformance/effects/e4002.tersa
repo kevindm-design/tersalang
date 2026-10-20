@@ -1,0 +1,16 @@
+# spec: design 12.2 lambdas are pure
+# expect: check-error E4002
+# fixed:   let _ = function () returns Unit\n    do\n      print("hi")\n    end =>   print("hi")
+module e4002
+
+import std.console exposing print
+
+function main() returns Unit
+  uses Console
+do
+  let _ = function () returns Unit
+    do
+      print("hi")
+    end
+  return
+end

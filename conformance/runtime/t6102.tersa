@@ -1,0 +1,16 @@
+# spec: design 10.4 ensures
+# expect: trap T6102
+# fixed: return 0 => return 1
+module t6102
+
+function f() returns Int
+  ensures result > 0
+do
+  return 0
+end
+
+function main() returns Unit
+do
+  let _ = f()
+  return
+end

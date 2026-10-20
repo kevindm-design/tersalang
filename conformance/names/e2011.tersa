@@ -1,0 +1,10 @@
+# spec: design 14 expect outside a test
+# expect: check-error E2011
+# fixed:   expect true\n  return\nend =>   return\nend\n\ntest "truth"\ndo\n  expect true\nend
+module e2011
+
+function main() returns Unit
+do
+  expect true
+  return
+end

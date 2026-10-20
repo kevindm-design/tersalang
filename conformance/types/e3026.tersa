@@ -1,0 +1,17 @@
+# spec: design 8.6 function values are not equatable
+# expect: check-error E3026
+# fixed: f == g => f(1) == g(1)
+module e3026
+
+function main() returns Bool
+do
+  let f = function (x: Int) returns Int
+    do
+      x
+    end
+  let g = function (x: Int) returns Int
+    do
+      x
+    end
+  return f == g
+end

@@ -1,0 +1,10 @@
+# spec: design 8.4 case needs arguments
+# expect: check-error E3006
+# fixed: let _ = Some => let _ = Some(1)
+module e3006
+
+function main() returns Unit
+do
+  let _ = Some
+  return
+end

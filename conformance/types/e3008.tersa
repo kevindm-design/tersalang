@@ -1,0 +1,10 @@
+# spec: design 8 unknown type
+# expect: check-error E3008
+# fixed: MissingType => Int
+module e3008
+
+function main() returns Unit
+do
+  let x: MissingType = 1
+  return
+end

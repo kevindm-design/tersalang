@@ -1,0 +1,7 @@
+# spec: design 22.1 the task interface that e3047.tersa is checked against
+module e3047_interface
+
+interface Solution
+  function add_one(n: Int) returns Int
+    ensures result == n + 1
+end

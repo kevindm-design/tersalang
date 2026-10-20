@@ -1,0 +1,8 @@
+# spec: language reference 8.4 bare return
+# expect: check-error E3032
+module e3032_bare
+
+function main() returns Int
+do
+  return
+end

@@ -1,0 +1,13 @@
+# spec: design 23 RH-08 fuel exhaustion is a failure
+# expect: trap T6201
+# fuel: 20
+module rh08_fuel
+
+function main() returns Unit
+do
+  while true
+  do
+    let _ = 1
+  end
+  return
+end

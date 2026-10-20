@@ -1,0 +1,28 @@
+# spec: design 7.5 records, invariants, update, and interfaces
+# expect: check-ok
+module examples_shapes
+
+public record Rect
+  width: Int
+  height: Int
+  invariant width >= 0 and height >= 0
+end
+
+public function area(r: Rect) returns Int
+  ensures result >= 0
+do
+  return r.width * r.height
+end
+
+public function widen(r: Rect, by: Int) returns Rect
+  requires by >= 0
+do
+  return r with (width = r.width + by)
+end
+
+implements Comparable[Rect]
+  function compare(a: Rect, b: Rect) returns Ordering
+  do
+    return Int.compare(area(a), area(b))
+  end
+end

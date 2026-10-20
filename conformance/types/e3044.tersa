@@ -1,0 +1,12 @@
+# spec: design 8.6 missing interface method
+# expect: check-error E3044
+# fixed: [Box]\nend => [Box]\n  function compare(a: Box, b: Box) returns Ordering\nend
+# fixed: Ordering\nend => Ordering\n  do\n    return Equal\n  end\nend
+module e3044
+
+record Box
+  value: Int
+end
+
+implements Comparable[Box]
+end

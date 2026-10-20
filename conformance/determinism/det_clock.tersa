@@ -1,0 +1,20 @@
+# spec: design 12.6 virtual clock
+# expect: stdout
+# allow: Console
+# allow: Clock
+# |0
+# |0
+# |1
+module det_clock
+
+import std.clock exposing monotonic, now
+import std.console exposing print
+
+function main() returns Unit
+  uses Console, Clock
+do
+  print(show(now()))
+  print(show(monotonic()))
+  print(show(monotonic()))
+  return
+end

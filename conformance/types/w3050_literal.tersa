@@ -1,0 +1,12 @@
+# spec: design 9.6 a literal index still warns
+# expect: check-warn W3050
+module w3050_literal
+
+function main() returns Unit
+do
+  let xs = [1, 2, 3]
+  if 0 < xs.length() then
+    let _ = xs.at(0)
+  end
+  return
+end

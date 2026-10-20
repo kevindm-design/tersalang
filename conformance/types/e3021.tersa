@@ -1,0 +1,9 @@
+# spec: design 9.1 slash is Float division
+# expect: check-error E3021
+# fixed: 1 / 2 => 1 div 2
+module e3021
+
+function main() returns Int
+do
+  return 1 / 2
+end

@@ -1,0 +1,33 @@
+# spec: design 8.2 None, a bare case, or [] is typed by the other side of == or !=
+# allow: Console
+# expect: stdout
+# |true false true
+# |first 4
+module none_compare
+
+import std.console exposing print
+
+choice Slot[T]
+  case Empty
+  case Held(value: T)
+end
+
+function first(xs: List[Int]) returns Int
+  requires xs.get(0) != None
+do
+  return xs.get(0).unwrap_or(0)
+end
+
+function main() returns Unit
+  uses Console
+do
+  let xs: List[Int] = [4]
+  let slot: Slot[Int] = Empty
+  let none_first = None == xs.get(1)
+  let empty_list = xs == []
+  print(Text.join([show(none_first), show(empty_list), show(slot == Empty)], " "))
+  if first(xs) == 4 then
+    print("first 4")
+  end
+  return
+end
