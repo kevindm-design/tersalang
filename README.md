@@ -1,39 +1,23 @@
 # Tersalang
 
-Tersalang is a small, word-based programming language designed to be written by language models and scored by reinforcement-learning harnesses. Blocks open with `do` and close with `end`, every effect a function uses is declared with `uses`, contracts (`requires`, `ensures`, `invariant`) are checked at run time, and every diagnostic has a stable code and a JSON form.
+[![PyPI](https://img.shields.io/pypi/v/tersalang)](https://pypi.org/project/tersalang/)
+[![Python](https://img.shields.io/pypi/pyversions/tersalang)](https://pypi.org/project/tersalang/)
+[![CI](https://github.com/kevindm-design/tersalang/actions/workflows/ci.yml/badge.svg)](https://github.com/kevindm-design/tersalang/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/kevindm-design/tersalang)](https://github.com/kevindm-design/tersalang/blob/main/LICENSE)
 
-This repository holds `tersa`, the reference interpreter, and an exported copy of the language specification.
-
-```tersa
-module hello
-
-import std.console exposing print
-
-public function main() returns Unit
-  uses Console
-do
-  print("Hello, world!")
-end
-```
-
-The language version is **0.1-draft** and the tool version is **0.1.0**. Both can still change in incompatible ways.
-
-## Install
-
-You need CPython 3.12 or newer and [uv](https://docs.astral.sh/uv/). The interpreter has no runtime dependencies.
+**A small, strict, word-based language for language models to write and reinforcement-learning harnesses to score.**
 
 ```bash
-git clone https://github.com/kevindm-design/tersalang.git
-cd tersalang
-uv sync
-uv run tersa version
+pip install tersalang
 ```
 
-`pip install -e .` also works and puts `tersa` on your `PATH`. The examples below write `tersa` for `uv run tersa`.
+That installs the `tersa` command. You need CPython 3.12 or newer (CI runs 3.12, 3.13, and 3.14). The interpreter has no runtime dependencies.
+
+The language version is **0.1-draft** and the tool version is **0.1.0**. Both can still change in incompatible ways. This repository holds the reference interpreter and an exported copy of the language specification.
 
 ## Quickstart
 
-Save this as `area.tersa`:
+Save this as `area.tersa`. The same program is [`examples/area.tersa`](examples/area.tersa).
 
 ```tersa
 module area
@@ -64,49 +48,96 @@ do
 end
 ```
 
-**Check** parses and type-checks the file. It prints nothing and exits 0 when the file is clean:
+Check the file, run its test, then run `main`. `Console` is an effect, so the host has to grant it:
 
-```console
-$ tersa check area.tersa
+```bash
+tersa check area.tersa
+tersa test area.tersa
+tersa run area.tersa --allow Console
 ```
 
-**Run** calls `main`. Effects are granted by the host, so `Console` must be allowed:
+`tersa check` prints nothing and exits 0 when the file is clean. `tersa test` ends with `1 test passed, 0 doc examples passed`. `tersa run` prints `12`.
+
+Running without the grant stops before `main`, with a stable code and a fix:
 
 ```console
-$ tersa run area.tersa --allow Console
-12
 $ tersa run area.tersa
 error[E4010]: main uses Console, but Console was not granted
   --> area.tersa:23:8
   = fix: run with --allow Console
 ```
 
-**Test** runs the `test` blocks and doc examples and ends with a summary line:
+![Terminal recording of tersa check, tersa test, and tersa run on area.tersa](docs/demo.gif)
 
-```console
-$ tersa test area.tersa
-1 test passed, 0 doc examples passed
+## Why Tersalang
+
+- **Blocks are words.** A block opens with `do` and closes with `end`. `tersa fmt` rewrites every file into the one canonical layout, and it has no configuration.
+- **Effects are declared.** A function lists what it needs with `uses`. The host grants each effect with `--allow`. A `main` that uses an effect you did not grant is refused before it starts (`E4010`).
+- **Contracts are checked at run time.** `requires`, `ensures`, and `invariant` run with the program. Building the `Rect` above with a negative side traps `T6103` (`invariant failed`).
+- **Diagnostics are data.** Every diagnostic has a stable code and a JSON form (`tersa.diagnostic/0.1`). `check`, `run`, `test`, and `sandbox` accept `--json`.
+- **Programs can be scored.** `tersa harness` runs an attempt against hidden tests under fuel and memory limits and prints one episode (`tersa.result/0.9`). `tersa grammar --format gbnf` prints a grammar that stock llama.cpp accepts, so a model can be limited to programs that parse.
+
+## From a git checkout
+
+Contributors use [uv](https://docs.astral.sh/uv/):
+
+```bash
+git clone https://github.com/kevindm-design/tersalang.git
+cd tersalang
+uv sync
+uv run tersa version
 ```
 
-**Format** rewrites files into the one canonical layout. `--check` only reports, prints a diff, and exits 1 when a file would change:
+`pip install -e .` also puts `tersa` on your `PATH`. Commands below are written as `tersa`. From this checkout, that is `uv run tersa`.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `tersa check FILE` | Parse and type-check |
+| `tersa run FILE` | Run `main` |
+| `tersa test FILE` | Run `test` blocks and doc examples |
+| `tersa sandbox FILE` | Run `main` in RL mode, with finite default limits and only the grants you pass |
+| `tersa fmt [PATH ...]` | Rewrite files into the canonical layout |
+| `tersa grammar` | Print the grammar as EBNF, Lark, or GBNF |
+| `tersa harness run TASK --attempt FILE` | Score one attempt against a task |
+| `tersa version` | Print the tool, language, schema, and Unicode versions |
+
+`tersa fmt --check` only reports. It prints a diff and exits 1 when a file would change:
 
 ```console
 $ tersa fmt --check messy.tersa
 would reformat messy.tersa
-...
--      return r.width*r.height
-+  return r.width * r.height
-$ tersa fmt messy.tersa
+--- messy.tersa
++++ messy.tersa
+@@ -2,5 +2,5 @@
+
+ public function area(r: Int) returns Int
+ do
+-      return r*r
++  return r * r
+ end
 ```
 
-`check`, `run`, `test`, and `sandbox` accept `--json`, which ends stdout with one line holding the diagnostics as a `tersa.diagnostic/0.1` array:
+With `--json`, stdout ends with one line holding the diagnostics. This file returns `Text` where `main` says `Int`:
 
 ```console
 $ tersa check --json bad.tersa
-[{"schema": "tersa.diagnostic/0.1", "code": "E3033", "severity": "error", "category": "type", "message": "expected Int, found Text", ...}]
+[{"schema": "tersa.diagnostic/0.1", "code": "E3033", "severity": "error", "category": "type", "message": "expected Int, found Text", "file": "bad.tersa", "span": {"start": {"line": 5, "column": 10}, "end": {"line": 5, "column": 14}}, "related": [], "blame": null, "values": null, "fix": null, "docs_url": "https://github.com/kevindm-design/tersalang/blob/main/docs/diagnostics.md#e3033"}]
 ```
 
-Each code links to a page in [docs/diagnostics.md](docs/diagnostics.md) with a wrong and a fixed example. Exit codes, execution modes, limits, and every flag are in [docs/cli.md](docs/cli.md).
+`bad.tersa` is:
+
+```tersa
+module bad
+
+public function main() returns Int
+do
+  return "no"
+end
+```
+
+Each code has a wrong example and a fixed example in [docs/diagnostics.md](docs/diagnostics.md). Flags, execution modes, limits, and exit codes are in [docs/cli.md](docs/cli.md).
 
 ## Harness
 
@@ -123,9 +154,9 @@ examples/tasks/add_one/
 ```
 
 ```bash
-uv run tersa harness run examples/tasks/add_one --attempt my_attempt.tersa
-uv run tersa harness run examples/tasks/add_one --attempt my_attempt.tersa --agent-view
-uv run tersa harness validate examples/tasks/add_one
+tersa harness run examples/tasks/add_one --attempt my_attempt.tersa
+tersa harness run examples/tasks/add_one --attempt my_attempt.tersa --agent-view
+tersa harness validate examples/tasks/add_one
 ```
 
 `harness run` prints one `tersa.result/0.9` episode as JSON. The harness:
@@ -137,15 +168,15 @@ uv run tersa harness validate examples/tasks/add_one
 
 `--agent-view` prints the copy an agent may see. That copy withholds hidden-test detail and rounds the resource counts. `harness validate` checks a task before training: the reference must pass, and sampled mutants of it must not.
 
-The full rules are in [docs/harness.md](docs/harness.md). They cover the reward, isolation backends, scored traps versus discarded episodes, and the reward-hacking defenses.
+The full rules are in [docs/harness.md](docs/harness.md): the reward, isolation backends, scored traps versus discarded episodes, and the reward-hacking defenses.
 
 ## Grammars
 
-`tersa grammar` prints the grammar as EBNF (the default), Lark, or GBNF. The GBNF export works with stock llama.cpp, so a model can be constrained to write only Tersalang that parses:
+`tersa grammar` prints the grammar as EBNF (the default), Lark, or GBNF. The GBNF export works with stock llama.cpp:
 
 ```bash
-uv run tersa grammar --format gbnf                      # every layout the parser accepts
-uv run tersa grammar --format gbnf --profile decoding   # the formatter's whitespace, for generation
+tersa grammar --format gbnf                      # every layout the parser accepts
+tersa grammar --format gbnf --profile decoding   # the formatter's whitespace, for generation
 ```
 
 See [docs/gbnf.md](docs/gbnf.md).
@@ -169,7 +200,7 @@ See [docs/gbnf.md](docs/gbnf.md).
 | `src/tersalang/` | The interpreter. The package docstring in `__init__.py` lists each module |
 | `spec/` | Specification exports, `tersa.ebnf`, `tersa.lark` (the grammar oracle and source of `tersa.gbnf`), the diagnostic, fuel, and limit catalogs, and JSON schemas |
 | `conformance/` | `.tersa` programs whose header says what each must produce, such as `# expect: check-error E3033` |
-| `examples/` | A hello-world program and the `add_one` harness task |
+| `examples/` | `hello.tersa`, the quickstart `area.tersa`, and the `add_one` harness task |
 | `tests/` | Unit, conformance, property, and fuzz tests |
 | `scripts/` | CI checks: formatting, GBNF drift, llama.cpp agreement, determinism bytes, and the generated diagnostics page |
 | `teps/` | The template for Tersalang Enhancement Proposals |
@@ -180,8 +211,8 @@ The interpreter lexes, parses, type-checks, and evaluates one file plus the buil
 
 The language was formerly called AIOWL.
 
-## Contributing and license
+## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Every commit needs a `Signed-off-by` trailer. Language changes go through a TEP.
+Small, tested changes are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). Report bugs and request features in the [issue tracker](https://github.com/kevindm-design/tersalang/issues). Language changes go through a TEP. Copy [`teps/0000-template.md`](teps/0000-template.md). Every commit needs a `Signed-off-by` trailer.
 
-The code is Apache-2.0. The specification and docs are CC BY 4.0. See `LICENSE` and `NOTICE`.
+The code is Apache-2.0 ([LICENSE](LICENSE)). The specification and the documents in `docs/` are CC BY 4.0 ([LICENSE-docs](LICENSE-docs), [NOTICE](NOTICE)).
